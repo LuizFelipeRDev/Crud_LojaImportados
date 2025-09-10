@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
 
 ## Getting Started
 
-First, run the development server:
+/dashImportados
+├─ /app (Next.js 13+ usando app router)
+│   ├─ /dashboard
+│   │   ├─ page.tsx        ← Dashboard principal
+│   │   ├─ components/
+│   │   │   ├─ Sidebar.tsx
+│   │   │   ├─ Navbar.tsx
+│   │   │   └─ Graphs.tsx
+│   │   └─ styles.css
+│   ├─ /login
+│   │   └─ page.tsx        ← Login page
+│   └─ layout.tsx          ← Layout global (envolve ThemeProvider)
+├─ /context
+│   └─ ThemeContext.tsx    ← Context para modo noturno
+├─ /lib
+│   └─ googleSheets.ts     ← Funções CRUD no Google Sheets
+├─ /public
+├─ /styles
+│   └─ globals.css
+├─ package.json
+└─ next.config.js
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Criar conta de serviço(CREDS)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🔑 Como criar a Service Account no Google Cloud
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Acesse o Console do Google Cloud
+👉 https://console.cloud.google.com/
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+No topo, confirme se está no projeto certo (o que você criou pro Sheets).
 
-## Learn More
+No menu lateral, vá em:
+IAM e administrador → Contas de serviço.
 
-To learn more about Next.js, take a look at the following resources:
+Clique em Criar conta de serviço:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Nome: pode ser algo como sheets-service-account
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+ID: o console gera automaticamente
 
-## Deploy on Vercel
+Descrição: opcional
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+➡️ Clique em Criar e continuar.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Permissões da conta de serviço
+Aqui você pode dar a permissão "Editor" (ou só "Visualizador" se for apenas leitura).
+➡️ Clique em Continuar.
+
+Criar chave JSON
+Depois que a conta for criada, clique nela e vá em:
+Chaves → Adicionar chave → Criar nova chave → JSON.
+
+Isso vai baixar um arquivo .json.
+Esse é o famoso service-account.json que você vai colocar na sua pasta utils ou config do projeto.
+
+Compartilhar a planilha com a Service Account
+
+Abra sua planilha do Google Sheets.
+
+Clique em Compartilhar.
+
+Copie o e-mail gerado pela service account (algo tipo meu-projeto@meu-projeto.iam.gserviceaccount.com).
+
+Dê permissão de Leitor (ou Editor se precisar escrever).
+
+=---->>Explain do scope
+
+Alguns exemplos de scopes do Google (só pra clarear):
+
+https://www.googleapis.com/auth/spreadsheets.readonly → apenas leitura.
+
+https://www.googleapis.com/auth/spreadsheets → leitura e escrita (esse você precisa).
+
+https://www.googleapis.com/auth/drive → acesso geral ao Google Drive.
