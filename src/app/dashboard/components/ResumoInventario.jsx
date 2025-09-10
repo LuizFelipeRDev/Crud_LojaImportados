@@ -28,7 +28,10 @@ export default function ResumoInventario() {
     fetchResumo();
   }, []);
 
-  if (loading) return <p>Carregando resumo...</p>;
+  if (loading) return <div className="text-center text-gray-500 p-4 flex flex-col gap-4 items-center">
+    <div class="loader"></div>
+    <p className="text-sm">Aguarde, estamos buscando os dados.</p>
+  </div>;
 
   const quadrados = [
     {

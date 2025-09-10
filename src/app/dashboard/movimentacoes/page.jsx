@@ -10,6 +10,7 @@ export default function MovimentacoesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editMov, setEditMov] = useState(null);
 
+  
   // Função de busca reutilizável
   const fetchMovimentacoes = async () => {
     try {
@@ -24,7 +25,7 @@ export default function MovimentacoesPage() {
     }
   };
 
-  // Carregar na montagem
+
   useEffect(() => {
     fetchMovimentacoes();
   }, []);
@@ -59,7 +60,7 @@ export default function MovimentacoesPage() {
       </div>
 
       {loading ? (
-        <div className="text-center text-gray-500 p-6 flex flex-col items-center">
+        <div className="text-center text-gray-500 p-6 gap-4 flex flex-col items-center">
           <div className="loader mb-2"></div>
           <p className="text-sm">Aguarde, estamos buscando os dados.</p>
         </div>

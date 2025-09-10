@@ -14,7 +14,7 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
     <div className="overflow-x-auto">
       <table className="w-full border-collapse shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-200 dark:bg-gray-700">
-          <tr>
+          <tr className="text-black">
             <th className="p-3 border-b">ID</th>
             <th className="p-3 border-b">Nome</th>
             <th className="p-3 border-b">Alíquota (%)</th>
@@ -44,20 +44,23 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
                   <span className="text-red-600 font-bold">Não</span>
                 )}
               </td>
-              <td className="p-2 border-b flex justify-center gap-2">
-                <button
-                  className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                  onClick={() => onEditar(produto)}
-                >
-                  <Edit size={16} /> Editar
-                </button>
-                <button
-                  className="text-red-600 hover:text-red-800 flex items-center gap-1"
-                  onClick={() => onExcluir(produto.ID)}
-                >
-                  <X size={16} /> Excluir
-                </button>
+              <td className="p-2 border-b">
+                <div className="flex justify-center items-center gap-2">
+                  <button
+                    className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                    onClick={() => onEditar(produto)}
+                  >
+                    <Edit size={16} /> Editar
+                  </button>
+                  <button
+                    className="text-red-600 hover:text-red-800 flex items-center gap-1"
+                    onClick={() => onExcluir(produto.ID)}
+                  >
+                    <X size={16} /> Excluir
+                  </button>
+                </div>
               </td>
+
             </tr>
           ))}
         </tbody>

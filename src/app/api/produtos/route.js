@@ -3,7 +3,7 @@ import { getSheetData, appendRow, updateRow, deleteRow } from "../../dashboard/l
 
 const SPREADSHEET_ID = "1Cy2LFNSrWw0O5thPjbeHfTTj0iZlSrDSVbuc-nBHi_Q";
 const RANGE = "Produtos!A1:H"; // Adicionada a coluna H para ValorUnitario
-
+const MOV_RANGE = "Movimentacoes!A1:H"
 // GET: Listar todos os produtos
 export async function GET() {
     try {
@@ -78,18 +78,43 @@ export async function PUT(request) {
 }
 
 // DELETE: Remover produto
+
 export async function DELETE(request) {
-    try {
-        const body = await request.json();
-        if (!body.ID) return NextResponse.json({ error: "ID do produto obrigatório" }, { status: 400 });
-
-        const produtos = await getSheetData(RANGE, SPREADSHEET_ID);
-        const index = produtos.findIndex(p => Number(p.ID) === Number(body.ID));
-        if (index === -1) return NextResponse.json({ error: "Produto não encontrado" }, { status: 404 });
-
-        await deleteRow(RANGE, index, SPREADSHEET_ID);
-        return NextResponse.json({ message: "Produto removido" });
-    } catch (err) {
-        return NextResponse.json({ error: err.message }, { status: 500 });
+  try {
+    const body = await request.json();
+    const produtoId = Number(body.ID);
+    if (!produtoId) {
+      return NextResponse.json({ error: "ID do produto obrigatório" }, { status: 400 });
     }
+
+    // Buscar produtos
+    const produtos = await getSheetData(RANGE, SPREADSHEET_ID);
+    const index = produtos.findIndex(p => Number(p.ID) === produtoId);
+    if (index === -1) {
+      return NextResponse.json({ error: "Produto não encontrado" }, { status: 404 });
+    }
+
+    const produto = produtos[index];
+
+    // Buscar movimentações
+    const movimentacoes = await getSheetData(MOV_RANGE, SPREADSHEET_ID);
+
+    const temMovimentacao = movimentacoes.some(
+      m => Number(m["ID Produto"]) === produtoId
+    );
+
+    if (temMovimentacao) {
+      return NextResponse.json({
+        error: `Produto '${produto.Nome}' possui movimentações registradas e não pode ser excluído.`
+      }, { status: 400 });
+    }
+
+    // Excluir produto
+    await deleteRow(RANGE, index, SPREADSHEET_ID);
+    return NextResponse.json({ message: "Produto removido com sucesso" });
+
+  } catch (err) {
+    console.error("Erro no DELETE /api/produtos:", err);
+    return NextResponse.json({ error: "Erro interno ao excluir produto" }, { status: 500 });
+  }
 }

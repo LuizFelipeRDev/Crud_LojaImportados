@@ -20,20 +20,33 @@ export default function ModalMovimentacoes({ isOpen, onClose, onSubmit, moviment
       .catch(err => console.error(err));
   }, []);
 
+//data 
+const formatToISO = (dataBR) => {
+  const [dia, mes, ano] = String(dataBR).split("/");
+  return `${ano}-${mes}-${dia}`;
+};
+
+
   // Preencher formulário em modo edição
-  useEffect(() => {
-    if (movimentacaoEdit) {
-      setForm({ ...movimentacaoEdit });
-    } else {
-      setForm({
-        NomeProduto: "",
-        Quantidade: "",
-        ValorUnitario: "",
-        Periodo: "",
-        Movimentacao: "Compra",
-      });
-    }
-  }, [movimentacaoEdit]);
+ useEffect(() => {
+  if (movimentacaoEdit) {
+    setForm({
+      NomeProduto: movimentacaoEdit["Nome Produto"], // <- use a chave correta
+      Quantidade: movimentacaoEdit.Quantidade,
+      ValorUnitario: movimentacaoEdit.ValorUnitario,
+      Periodo: formatToISO(movimentacaoEdit.Periodo),
+      Movimentacao: movimentacaoEdit.Tipo, 
+    });
+  } else {
+    setForm({
+      NomeProduto: "",
+      Quantidade: "",
+      ValorUnitario: "",
+      Periodo: "",
+      Movimentacao: "Compra",
+    });
+  }
+}, [movimentacaoEdit]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,6 +71,8 @@ export default function ModalMovimentacoes({ isOpen, onClose, onSubmit, moviment
 
     onClose();
   };
+
+
 
   if (!isOpen) return null;
 
