@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
-export default function ModalMovimentacoes({ isOpen, onClose, onSubmit, movimentacaoEdit }) {
+export default function ModalMovimentacoes({ isOpen, onClose, onSubmit, onError }) {
   const [produtos, setProdutos] = useState([]);
   const [form, setForm] = useState({
     NomeProduto: "",
@@ -12,7 +12,8 @@ export default function ModalMovimentacoes({ isOpen, onClose, onSubmit, moviment
     Movimentacao: "Compra",
   });
 
-  // Buscar produtos da aba Produtos
+const [enviando, setEnviando] = useState(false);
+
   useEffect(() => {
     fetch("/api/produtos")
       .then(res => res.json())
@@ -20,57 +21,36 @@ export default function ModalMovimentacoes({ isOpen, onClose, onSubmit, moviment
       .catch(err => console.error(err));
   }, []);
 
-//data 
-const formatToISO = (dataBR) => {
-  const [dia, mes, ano] = String(dataBR).split("/");
-  return `${ano}-${mes}-${dia}`;
-};
-
-
-  // Preencher formulário em modo edição
- useEffect(() => {
-  if (movimentacaoEdit) {
-    setForm({
-      NomeProduto: movimentacaoEdit["Nome Produto"], // <- use a chave correta
-      Quantidade: movimentacaoEdit.Quantidade,
-      ValorUnitario: movimentacaoEdit.ValorUnitario,
-      Periodo: formatToISO(movimentacaoEdit.Periodo),
-      Movimentacao: movimentacaoEdit.Tipo, 
-    });
-  } else {
-    setForm({
-      NomeProduto: "",
-      Quantidade: "",
-      ValorUnitario: "",
-      Periodo: "",
-      Movimentacao: "Compra",
-    });
-  }
-}, [movimentacaoEdit]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  // Conversão segura para número
   const valorUnitarioNumerico = Number(form.ValorUnitario.replace(",", "."));
   const quantidadeNumerica = Number(form.Quantidade);
   const valorTotal = quantidadeNumerica && valorUnitarioNumerico
     ? quantidadeNumerica * valorUnitarioNumerico
     : 0;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+ const handleSubmit = (e) => {
+  e.preventDefault();
 
-    onSubmit({
-      ...form,
-      ValorUnitario: valorUnitarioNumerico,
-      ValorTotal: valorTotal,
-    });
+  const camposObrigatorios = ["NomeProduto", "Quantidade", "ValorUnitario", "Periodo", "Movimentacao"];
+  const faltando = camposObrigatorios.filter(c => !form[c]);
 
-    onClose();
-  };
+  if (faltando.length > 0) {
+    onError?.(`Preencha todos os campos obrigatórios: ${faltando.join(", ")}`);
+    return;
+  }
+
+  onSubmit({
+    ...form,
+    ValorUnitario: valorUnitarioNumerico,
+    ValorTotal: valorTotal,
+  });
+
+  onClose();
+};
 
 
 
@@ -78,25 +58,27 @@ const formatToISO = (dataBR) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg w-96 relative">
+      <div className="bg-white dark:bg-gray-900 text-black p-6 rounded-lg shadow-lg w-96 relative">
         <button onClick={onClose} className="absolute top-3 right-3">
           <X size={20} />
         </button>
-        <h3 className="text-lg font-bold mb-4">{movimentacaoEdit ? "Editar Movimentação" : "Nova Movimentação"}</h3>
+        <h3 className="text-lg font-bold mb-4 text-black">Nova Movimentação</h3>
         <form onSubmit={handleSubmit} className="space-y-3">
 
-          <label>Produto</label>
+          <label className="text-black">Produto</label>
           <select
             name="NomeProduto"
             value={form.NomeProduto}
             onChange={handleChange}
-            className="w-full p-2 rounded border"
+            className="w-full p-2 rounded border text-black"
             required
           >
             <option value="">Selecione o produto</option>
-            {produtos.map(p => (
-              <option key={p.ID} value={p.Nome}>{p.Nome}</option>
-            ))}
+            {produtos
+              .filter(p => p.Ativo !== "Não")
+              .map(p => (
+                <option key={p.ID} value={p.Nome}>{p.Nome}</option>
+              ))}
           </select>
 
           <input
@@ -108,7 +90,7 @@ const formatToISO = (dataBR) => {
               const valor = e.target.value.replace(/[^\d]/g, "");
               setForm({ ...form, Quantidade: valor });
             }}
-            className="w-full p-2 rounded border"
+            className="w-full p-2 rounded border text-black"
             required
           />
 
@@ -155,8 +137,8 @@ const formatToISO = (dataBR) => {
             <option value="Ajuste">Ajuste</option>
           </select>
 
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded">
-            {movimentacaoEdit ? "Salvar Alterações" : "Adicionar Movimentação"}
+          <button type="submit"  disabled={enviando} className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded">
+            Adicionar Movimentação
           </button>
         </form>
       </div>

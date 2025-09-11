@@ -14,13 +14,15 @@ export default function Sidebar({ handleLogout }) {
   const sidebarBorder = tema === "dark" ? "border-gray-700" : "border-gray-200";
   const logoutBg = tema === "dark" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-red-500 hover:bg-red-600 text-black";
 
-  const menuItems = [
-    { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },
-    { name: "Produtos", icon: <Box size={20} />, path: "/dashboard/produtos" },
-    { name: "Movimentações", icon: <Repeat size={20} />, path: "/dashboard/movimentacoes" },
-    { name: "Relatórios", icon: <BarChart size={20} />, path: "/dashboard/relatorios" },
-    { name: "Configurações", icon: <Settings size={20} />, path: "/dashboard/configuracoes" },
-  ];
+const menuItems = [
+  { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },
+  { name: "Produtos", icon: <Box size={20} />, path: "/dashboard/produtos" },
+  { name: "Movimentações", icon: <Repeat size={20} />, path: "/dashboard/movimentacoes" },
+  { name: "Relatórios", icon: <BarChart size={20} />, path: "/dashboard/relatorios" },
+  { name: "Fornecedores", icon: <Truck size={20} />, path: "/dashboard/fornecedores" },
+  { name: "Configurações", icon: <Settings size={20} />, path: "/dashboard/configuracoes" },
+];
+
 
   return (
     <motion.div
@@ -28,13 +30,18 @@ export default function Sidebar({ handleLogout }) {
       className={`h-screen flex flex-col justify-between p-4 ${sidebarBg} border-r-2 ${sidebarBorder} relative`}
       transition={{ type: "spring", stiffness: 200, damping: 25 }}
     >
-      {/* Toggle da Sidebar */}
       <button
         onClick={() => setOpen(!open)}
-        className={`absolute top-4 right-[-26px]  w-12 h-12 rounded-full flex items-center justify-center z-10 hover:brightness-90 transition-all ${tema === "dark" ? "bg-gray-800 text-white" : "bg-gray-100 text-black"}`}
+        className={`absolute top-4 right-[-24px] w-10 h-10 rounded-full flex items-center justify-center z-10 transition-all duration-300 shadow-md ${tema === "dark"
+          ? "bg-gray-700 hover:bg-gray-600 text-white"
+          : "bg-gray-200 hover:bg-gray-300 text-black"
+          }`}
       >
-        {open ? "<" : ">"}
+        <span className="text-xl font-bold transition-transform duration-300">
+          {open ? "⮜" : "⮞"}
+        </span>
       </button>
+
 
       {/* Topo: logo */}
       <div className="flex items-center gap-2 mb-6">
@@ -61,32 +68,51 @@ export default function Sidebar({ handleLogout }) {
 
       {/* Botões */}
       <div className="flex flex-col gap-3">
-        <div className={open ? "border-t-4 rounded-3xl mb-4" : ""}></div>
+        {/* Separador visual */}
+        {open && <hr className={`my-4 border-t ${tema === "dark" ? "border-gray-700" : "border-gray-300"}`} />}
 
         {/* Toggle Dark/Light Mode */}
-        <div className="flex items-center justify-center">
+        <button
+          onClick={toggleTema}
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 ${tema === "dark"
+            ? "bg-gray-700 hover:bg-gray-600 text-white"
+            : "bg-gray-300 hover:bg-gray-400 text-black"
+            }`}
+        >
           {open ? (
-            <div className="toggle-switch">
-              <label className="switch-label">
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  checked={tema === "dark"}
-                  onChange={toggleTema}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
+            <>
+              {tema === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+              <span className="font-medium">
+                {tema === "dark" ? "Modo Escuro" : "Modo Claro"}
+              </span>
+            </>
           ) : (
-            <button onClick={toggleTema} className="p-1">
-              {tema === "dark" ? <Moon size={20} /> : <Sun size={20} />}
-            </button>
-          )}
-        </div>
 
-        <button onClick={handleLogout} className={`px-1 py-2 rounded-xl ${logoutBg}`}>
-          {open ? "⏻ Logout" : "⏻"}
+            <span className="ml-[-0.42rem] py-1.5">
+              {tema === "dark" ? <Moon size={20} /> : <Sun size={20} />}
+            </span>
+
+          )}
         </button>
+
+        {/* Botão de Logout */}
+        <button
+          onClick={handleLogout}
+          className={`flex items-center gap-2 px-3  py-2 rounded-lg transition-colors duration-200 ${tema === "dark"
+            ? "bg-red-600 hover:bg-red-700 text-white"
+            : "bg-red-500 hover:bg-red-600 text-white"
+            }`}
+        >
+          {open ? (
+            <>
+              <span className="text-lg">⏻</span>
+              <span className="font-medium">Logout</span>
+            </>
+          ) : (
+            <span className="text-lg ml-[-0.37rem]">⏻</span>
+          )}
+        </button>
+
       </div>
     </motion.div>
   );

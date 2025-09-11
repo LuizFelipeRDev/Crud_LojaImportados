@@ -32,12 +32,7 @@ export default function AcessoRestrito() {
         >
           Voltar ao Login
         </button>
-        <button
-          onClick={() => router.push("/")}
-          className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-        >
-          Fechar
-        </button>
+
       </div>
     </div>
 </section>

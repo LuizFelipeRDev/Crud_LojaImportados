@@ -1,33 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
-import { X, Edit } from "lucide-react";
+import { useState } from "react";
+import { X } from "lucide-react";
 import ModalMovimentacoes from "./ModalMovimentacoes";
 
-export default function TabelaMovimentacoes() {
-  const [movimentacoes, setMovimentacoes] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function TabelaMovimentacoes({ movimentacoes }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [movimentacaoEdit, setMovimentacaoEdit] = useState(null);
-
   const [showAviso, setShowAviso] = useState(false);
   const [idParaExcluir, setIdParaExcluir] = useState(null);
-
-  const fetchMovimentacoes = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/movimentacoes");
-      const data = await res.json();
-      setMovimentacoes(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMovimentacoes();
-  }, []);
+  const [erroMovimentacao, setErroMovimentacao] = useState("");
 
   const parseDecimalBR = (v) => {
     if (v == null) return 0;
@@ -54,27 +34,25 @@ export default function TabelaMovimentacoes() {
       });
 
       const result = await res.json();
-      if (res.ok) {
-        fetchMovimentacoes();
-      } else {
-        alert("Erro ao excluir: " + result.error);
+      if (!res.ok) {
+        setErroMovimentacao(result.error || "Erro ao excluir movimentação");
       }
     } catch (err) {
       console.error("Erro ao excluir:", err);
-      alert("Erro inesperado ao excluir.");
+      setErroMovimentacao("Erro inesperado ao excluir.");
     } finally {
       setShowAviso(false);
       setIdParaExcluir(null);
     }
   };
 
-  if (loading)
+  if (!movimentacoes || movimentacoes.length === 0) {
     return (
-      <div className="text-center text-gray-500 p-4 flex flex-col gap-4 items-center mt-8">
-        <div className="loader"></div>
-        <p className="text-sm mt-2">Aguarde, estamos buscando os dados.</p>
+      <div className="text-center text-gray-500 p-4 mt-8">
+        <p className="text-sm">Nenhuma movimentação encontrada para este mês.</p>
       </div>
     );
+  }
 
   return (
     <div className="overflow-x-auto relative">
@@ -97,7 +75,7 @@ export default function TabelaMovimentacoes() {
             const valorTotalNum = parseDecimalBR(m["Valor Total"]);
 
             return (
-              <tr key={m["ID Produto"] ?? idx} className="text-center hover:bg-gray-100 dark:hover:bg-gray-700">
+              <tr key={m["Mov ID"] ?? idx} className="text-center hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700">
                 <td className="border-b p-2">{m["ID Produto"]}</td>
                 <td className="border-b p-2">{m["Nome Produto"]}</td>
                 <td className="border-b p-2">{m.Quantidade}</td>
@@ -112,23 +90,12 @@ export default function TabelaMovimentacoes() {
                   )}
                 </td>
                 <td className="p-2 border-b">
-                  <div className="flex justify-center items-center gap-2">
-                    <button
-                      className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                      onClick={() => {
-                        setMovimentacaoEdit(m);
-                        setIsModalOpen(true);
-                      }}
-                    >
-                      <Edit size={16} /> Editar
-                    </button>
-                    <button
-                      className="text-red-600 hover:text-red-800 flex items-center gap-1"
-                      onClick={() => handleExcluir(m["Mov ID"])}
-                    >
-                      <X size={16} /> Excluir
-                    </button>
-                  </div>
+                  <button
+                    className="text-red-600 hover:text-red-800 flex items-center gap-1"
+                    onClick={() => handleExcluir(m["Mov ID"])}
+                  >
+                    <X size={16} /> Excluir
+                  </button>
                 </td>
               </tr>
             );
@@ -139,34 +106,33 @@ export default function TabelaMovimentacoes() {
       {isModalOpen && (
         <ModalMovimentacoes
           isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setMovimentacaoEdit(null);
-          }}
-          movimentacaoEdit={movimentacaoEdit}
-          onSubmit={async (dados) => {
-            const method = movimentacaoEdit ? "PUT" : "POST";
-
-            const res = await fetch("/api/movimentacoes", {
-              method,
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                ...dados,
-                ID: movimentacaoEdit?.["Mov ID"],
-              }),
-            });
-
-            const result = await res.json();
-            if (res.ok) {
-              fetchMovimentacoes();
-            } else {
-              alert("Erro: " + result.error);
-            }
-
-            setIsModalOpen(false);
-            setMovimentacaoEdit(null);
-          }}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={() => setIsModalOpen(false)}
         />
+      )}
+
+      {erroMovimentacao && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+          <div className="alert-box">
+            <div className="alert-header">
+              <div className="alert-icon text-red-600">
+                <X />
+              </div>
+              <div className="alert-content">
+                <h3 className="alert-title font-bold text-lg">Erro na movimentação</h3>
+                <p className="alert-message text-sm mt-2">{erroMovimentacao}</p>
+              </div>
+              <div className="alert-actions mt-4 flex justify-center gap-2">
+                <button
+                  className="alert-cancel px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                  onClick={() => setErroMovimentacao("")}
+                >
+                  Fechar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {showAviso && (

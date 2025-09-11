@@ -8,8 +8,6 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
     return <p className="text-gray-500">Nenhum produto cadastrado.</p>;
   }
 
-
-
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse shadow-md rounded-lg overflow-hidden">
@@ -17,7 +15,7 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
           <tr className="text-black">
             <th className="p-3 border-b">ID</th>
             <th className="p-3 border-b">Nome</th>
-            <th className="p-3 border-b">Alíquota (%)</th>
+            <th className="p-3 border-b">Fornecedores</th>
             <th className="p-3 border-b">Categoria</th>
             <th className="p-3 border-b">Marca</th>
             <th className="p-3 border-b">Unidade</th>
@@ -29,11 +27,11 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
           {produtos.map((produto, idx) => (
             <tr
               key={idx}
-              className="text-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="text-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hover:text-gray-700"
             >
               <td className="p-2 border-b">{produto.ID}</td>
               <td className="p-2 border-b">{produto.Nome}</td>
-              <td className="p-2 border-b">{produto.Aliquota}</td>
+              <td className="p-2 border-b">{produto.Fornecedores}</td>
               <td className="p-2 border-b">{produto.Categoria}</td>
               <td className="p-2 border-b">{produto.Marca || "-"}</td>
               <td className="p-2 border-b">{produto.Unidade || "-"}</td>
@@ -48,7 +46,11 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
                 <div className="flex justify-center items-center gap-2">
                   <button
                     className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                    onClick={() => onEditar(produto)}
+                   onClick={() => {
+  console.log("Produto enviado para edição:", produto);
+  onEditar(produto);
+}}
+                    
                   >
                     <Edit size={16} /> Editar
                   </button>
@@ -60,7 +62,6 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
                   </button>
                 </div>
               </td>
-
             </tr>
           ))}
         </tbody>

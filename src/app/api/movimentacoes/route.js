@@ -1,9 +1,8 @@
-// src/app/api/movimentacoes/route.js
 import { NextResponse } from "next/server";
 import { getSheetData, appendRow, updateRow, deleteRow } from "../../dashboard/lib/googlesheets";
 
 const SPREADSHEET_ID = "1Cy2LFNSrWw0O5thPjbeHfTTj0iZlSrDSVbuc-nBHi_Q";
-const RANGE = "Movimentacoes!A1:H"; 
+const RANGE = "Movimentacoes!A1:H";
 const PRODUTOS_RANGE = "Produtos!A1:H";
 
 // GET
@@ -17,12 +16,12 @@ export async function GET() {
 }
 
 // POST
-
 export async function POST(request) {
   try {
     const body = await request.json();
     const { NomeProduto, ValorUnitario, Quantidade, Periodo, Movimentacao } = body;
 
+    // Validação de campos obrigatórios
     const camposFaltando = [];
     if (!NomeProduto) camposFaltando.push("NomeProduto");
     if (!Quantidade) camposFaltando.push("Quantidade");
@@ -53,10 +52,38 @@ export async function POST(request) {
     const ValorTotal = valorUnitarioNum * quantidadeNum;
     const PeriodoFormatado = formatDataBR(Periodo);
 
-    // Buscar todas as movimentações existentes
-    const movimentacoes = await getSheetData(RANGE, SPREADSHEET_ID);
+    const estoqueAtual = Number(String(produto.Unidade).replace(",", "."));
+    let novoEstoque;
 
-    // Extrair IDs válidos do campo "Mov ID"
+    if (Movimentacao === "Compra") {
+      novoEstoque = estoqueAtual + quantidadeNum;
+    } else if (Movimentacao === "Venda") {
+      if (quantidadeNum > estoqueAtual) {
+        return NextResponse.json({
+          error: `Estoque insuficiente para '${NomeProduto}'. Disponível: ${estoqueAtual}, solicitado: ${quantidadeNum}`,
+        }, { status: 400 });
+      }
+      novoEstoque = estoqueAtual - quantidadeNum;
+    } else {
+      return NextResponse.json({ error: `Tipo de movimentação inválido: ${Movimentacao}` }, { status: 400 });
+    }
+
+    const linhaProduto = produtos.findIndex(p => p.ID === ProdutoID);
+    if (linhaProduto === -1) {
+      return NextResponse.json({ error: "Linha do produto não encontrada para atualização" }, { status: 500 });
+    }
+
+    // Atualiza estoque
+    produtos[linhaProduto].Unidade = String(novoEstoque);
+    try {
+      await updateRow(produtos[linhaProduto], linhaProduto + 2, SPREADSHEET_ID, PRODUTOS_RANGE);
+    } catch (err) {
+      console.error("Erro ao atualizar produto:", err);
+      return NextResponse.json({ error: "Falha ao atualizar estoque do produto." }, { status: 500 });
+    }
+
+    // Gera novo ID de movimentação
+    const movimentacoes = await getSheetData(RANGE, SPREADSHEET_ID);
     const idsExistentes = movimentacoes
       .map(row => Number(row["Mov ID"]))
       .filter(id => !isNaN(id) && id > 0);
@@ -65,7 +92,6 @@ export async function POST(request) {
       ? Math.max(...idsExistentes) + 1
       : 1;
 
-    // Construir nova linha como array (ordem das colunas da planilha)
     const newRow = [
       ProdutoID,
       NomeProduto,
@@ -74,57 +100,26 @@ export async function POST(request) {
       ValorTotal,
       PeriodoFormatado,
       Movimentacao,
-      nextID // Mov ID na última coluna
+      nextID
     ];
 
-    await appendRow(newRow, SPREADSHEET_ID, RANGE);
+    // Adiciona movimentação
+    try {
+      await appendRow(newRow, SPREADSHEET_ID, RANGE);
+    } catch (err) {
+      console.error("Erro ao registrar movimentação:", err);
+      return NextResponse.json({ error: "Falha ao registrar movimentação." }, { status: 500 });
+    }
 
+    // Sucesso
     return NextResponse.json({
-      message: "Movimentação adicionada",
+      message: "Movimentação registrada e estoque atualizado",
       movimentacao: newRow,
+      novoEstoque,
     });
   } catch (err) {
-    console.error("Erro ao adicionar movimentação:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-}
-
-
-// PUT
-export async function PUT(request) {
-  try {
-    const body = await request.json();
-    const movimentacaoId = body.ID ?? body.id;
-    if (!movimentacaoId) return NextResponse.json({ error: "ID da movimentação obrigatório" }, { status: 400 });
-
-    const movimentacoes = await getSheetData(RANGE, SPREADSHEET_ID);
-    const index = movimentacoes.findIndex(m => Number(m["Mov ID"]) === Number(movimentacaoId));
-    if (index === -1) return NextResponse.json({ error: "Movimentação não encontrada" }, { status: 404 });
-
-    const original = movimentacoes[index];
-    const Quantidade = body.Quantidade ?? original["Quantidade"];
-    const ValorUnitario = body.ValorUnitario ?? original["ValorUnitario"];
-    const ValorTotal = Number(Quantidade) * Number(ValorUnitario);
-
-    const updatedRow = [
-      original["ID Produto"],
-      body.NomeProduto ?? original["Nome Produto"],
-      Quantidade,
-      ValorUnitario,
-      ValorTotal,
-      body.Periodo ?? original["Periodo"],
-      body.Movimentacao ?? original["Tipo"],
-      original["Mov ID"]
-    ];
-
-
-    const rowNumber = index + 2;
-    const rangeForUpdate = `Movimentacoes!A${rowNumber}:H${rowNumber}`;
-    await updateRow(SPREADSHEET_ID, rangeForUpdate, [updatedRow]);
-
-    return NextResponse.json({ message: "Movimentação atualizada", movimentacao: updatedRow });
-  } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error("Erro inesperado ao adicionar movimentação:", err);
+    return NextResponse.json({ error: "Erro interno: " + err.message }, { status: 500 });
   }
 }
 
@@ -133,13 +128,57 @@ export async function DELETE(request) {
   try {
     const body = await request.json();
     const movimentacaoId = body.ID;
-    if (!movimentacaoId) return NextResponse.json({ error: "ID da movimentação obrigatório" }, { status: 400 });
+    if (!movimentacaoId) {
+      return NextResponse.json({ error: "ID da movimentação obrigatório" }, { status: 400 });
+    }
 
     const movimentacoes = await getSheetData(RANGE, SPREADSHEET_ID);
     const index = movimentacoes.findIndex(m => Number(m["Mov ID"]) === Number(movimentacaoId));
+    if (index === -1) {
+      return NextResponse.json({ error: "Movimentação não encontrada" }, { status: 404 });
+    }
+
+    const mov = movimentacoes[index];
+    const produtos = await getSheetData(PRODUTOS_RANGE, SPREADSHEET_ID);
+    const produto = produtos.find(p => p.ID === mov["ID Produto"]);
+    if (!produto) {
+      return NextResponse.json({ error: "Produto vinculado não encontrado" }, { status: 404 });
+    }
+
+    const estoqueAtual = Number(String(produto.Unidade).replace(",", "."));
+    const quantidadeMov = Number(String(mov.Quantidade).replace(",", "."));
+    let novoEstoque;
+
+    if (mov.Tipo === "Compra") {
+      novoEstoque = estoqueAtual - quantidadeMov;
+      if (novoEstoque < 0) {
+        return NextResponse.json({
+          error: `Não é possível excluir. A reversão da compra deixaria o estoque negativo (${novoEstoque})`,
+        }, { status: 400 });
+      }
+    } else if (mov.Tipo === "Venda") {
+      novoEstoque = estoqueAtual + quantidadeMov;
+    } else {
+      return NextResponse.json({ error: `Tipo de movimentação inválido: ${mov.Tipo}` }, { status: 400 });
+    }
+
+    const linhaProduto = produtos.findIndex(p => p.ID === produto.ID);
+    if (linhaProduto === -1) {
+      return NextResponse.json({ error: "Linha do produto não encontrada para reversão" }, { status: 500 });
+    }
+
+    produtos[linhaProduto].Unidade = String(novoEstoque);
+    await updateRow(produtos[linhaProduto], linhaProduto + 2, SPREADSHEET_ID, PRODUTOS_RANGE);
+
     await deleteRow(RANGE, index, SPREADSHEET_ID);
-    return NextResponse.json({ message: "Movimentação removida" });
+
+    return NextResponse.json({
+      message: "Movimentação removida e estoque revertido",
+      estoqueAnterior: estoqueAtual,
+      estoqueAtualizado: novoEstoque,
+    });
   } catch (err) {
+    console.error("Erro ao excluir movimentação:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

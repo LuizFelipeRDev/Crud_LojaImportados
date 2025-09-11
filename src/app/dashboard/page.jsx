@@ -1,6 +1,11 @@
 "use client"
 import { useTheme } from "@/context/ThemeContext";
 import ResumoInventario from "./components/ResumoInventario";
+import GraficoMovimentacoes from "./components/GraficoMovimentacoes";
+import GraficoTopProdutos from "./components/GraficoTopProdutos.jsx";
+import GraficoLucroProdutos from "./components/GraficoLucroProdutos";
+import GraficoEstoquePizza from "./components/GraficoEstoquePizza";
+import GraficoEstoquePorMarca from "./components/GraficoEstoquePorMarca";
 
 
 export default function DashboardPage() {
@@ -15,34 +20,43 @@ export default function DashboardPage() {
       <h1 className="text-3xl font-bold mb-4">Bem-vindo ao Dashboard!</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className={`p-6 rounded-lg shadow-md ${cardBg}`}>
-          <h2 className={`text-xl font-bold mb-2 ${cardText}`}>Produtos/Quantidade</h2>
+        <div className={`p-6 rounded-lg shadow-md flex items-center justify-center ${cardBg}`}>
           <ul className={`text-gray-900 space-y-1`}>
-             <ResumoInventario/>
+            <ResumoInventario />
           </ul>
         </div>
 
         <div className={`p-6 rounded-lg shadow-md ${cardBg}`}>
-          <h2 className={`text-xl font-bold mb-2 ${cardText}`}>Compra/Venda</h2>
-            <div className={`h-32 rounded mt-2 ${chartBg}`}></div>
-          
+          <h2 className={`text-xl font-bold mb-2 ${cardText}`}></h2>
+
+          <GraficoMovimentacoes />
+
         </div>
 
         <div className={`p-6 rounded-lg shadow-md ${cardBg}`}>
-          <h2 className={`text-xl font-bold mb-2 ${cardText}`}>Caixa (Receita/Saída)</h2>
-          <div className={`h-32 rounded mt-2 ${chartBg}`}></div>
+          <h2 className={`text-xl font-bold mb-2 ${cardText}`}></h2>
+          <GraficoTopProdutos />
         </div>
 
         <div className={`p-6 rounded-lg shadow-md ${cardBg}`}>
-          <h2 className={`text-xl font-bold mb-2 ${cardText}`}>Resumo rápido</h2>
-          <p className={cardText}>Pedidos em andamento, alertas e notificações.</p>
+          <h2 className={`text-xl font-bold mb-2 ${cardText}`}></h2>
+          <GraficoLucroProdutos />
         </div>
+
+
+        <div className={`p-6 rounded-lg shadow-md ${cardBg}`}>
+          <h2 className={`text-xl font-bold mb-2 ${cardText}`}></h2>
+          <GraficoEstoquePizza />
+        </div>
+
+        <div className={`p-6 rounded-lg shadow-md ${cardBg}`}>
+          <h2 className={`text-xl font-bold mb-2 ${cardText}`}></h2>
+          <GraficoEstoquePorMarca />
+        </div>
+
       </div>
 
-      <div className={`p-6 rounded-lg shadow-md ${cardBg} mt-6`}>
-        <h2 className={`text-xl font-bold mb-2 ${cardText}`}>Relatório consolidado</h2>
-        <div className={`h-48 rounded mt-2 ${chartBg}`}></div>
-      </div>
+
     </div>
   );
 }
