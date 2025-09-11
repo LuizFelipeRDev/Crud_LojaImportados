@@ -14,14 +14,14 @@ export default function Sidebar({ handleLogout }) {
   const sidebarBorder = tema === "dark" ? "border-gray-700" : "border-gray-200";
   const logoutBg = tema === "dark" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-red-500 hover:bg-red-600 text-black";
 
-const menuItems = [
-  { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },
-  { name: "Produtos", icon: <Box size={20} />, path: "/dashboard/produtos" },
-  { name: "Movimentações", icon: <Repeat size={20} />, path: "/dashboard/movimentacoes" },
-  { name: "Relatórios", icon: <BarChart size={20} />, path: "/dashboard/relatorios" },
-  { name: "Fornecedores", icon: <Truck size={20} />, path: "/dashboard/fornecedores" },
-  { name: "Configurações", icon: <Settings size={20} />, path: "/dashboard/configuracoes" },
-];
+  const menuItems = [
+    { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },
+    { name: "Produtos", icon: <Box size={20} />, path: "/dashboard/produtos" },
+    { name: "Movimentações", icon: <Repeat size={20} />, path: "/dashboard/movimentacoes" },
+    { name: "Relatórios", icon: <BarChart size={20} />, path: "/dashboard/relatorios" },
+    { name: "Fornecedores", icon: <Truck size={20} />, path: "/dashboard/fornecedores" },
+    { name: "Configurações", icon: <Settings size={20} />, path: "/dashboard/configuracoes" },
+  ];
 
 
   return (
@@ -68,6 +68,13 @@ const menuItems = [
 
       {/* Botões */}
       <div className="flex flex-col gap-3">
+        {/* Descrição discreta acima do separador */}
+        {open && (
+          <div className=" text-gray-500 text-center  italic">
+            A Lue Site
+          </div>
+        )}
+
         {/* Separador visual */}
         {open && <hr className={`my-4 border-t ${tema === "dark" ? "border-gray-700" : "border-gray-300"}`} />}
 
