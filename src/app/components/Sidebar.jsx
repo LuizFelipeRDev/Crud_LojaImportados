@@ -18,8 +18,8 @@ export default function Sidebar({ handleLogout }) {
     { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },
     { name: "Produtos", icon: <Box size={20} />, path: "/dashboard/produtos" },
     { name: "Movimentações", icon: <Repeat size={20} />, path: "/dashboard/movimentacoes" },
-    { name: "Relatórios", icon: <BarChart size={20} />, path: "/dashboard/relatorios" },
     { name: "Fornecedores", icon: <Truck size={20} />, path: "/dashboard/fornecedores" },
+    { name: "Relatórios", icon: <BarChart size={20} />, path: "/dashboard/relatorios" },
     { name: "Configurações", icon: <Settings size={20} />, path: "/dashboard/configuracoes" },
   ];
 
