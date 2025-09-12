@@ -2,9 +2,11 @@
 import { useState, useEffect } from "react";
 import ProdutoModal from "../produtos/components/ProdutoModal";
 import ProdutoTable from "../produtos/components/ProdutoTable";
-import { X, DiamondPlus } from "lucide-react";
+import { X, DiamondPlus, Search, Box, Badge, ChartColumnStacked } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function ProdutosPage() {
+  const { tema } = useTheme();
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
@@ -21,16 +23,29 @@ export default function ProdutosPage() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todas");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [ordenacao, setOrdenacao] = useState("asc");
+  const [ordenarPorId, setOrdenarPorId] = useState("desc");
+
+  const [ordenarPor, setOrdenarPor] = useState("id-desc");
+
 
   const itensPorPagina = 20;
-
+  useEffect(() => {
+    if (tema === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [tema]);
   useEffect(() => {
     const fetchProdutos = async () => {
       setLoading(true);
       try {
         const res = await fetch("/api/produtos");
         const data = await res.json();
-        setProdutos(data);
+
+        // Ordena por ID decrescente ao carregar
+        const ordenados = data.sort((a, b) => Number(b.ID) - Number(a.ID));
+        setProdutos(ordenados);
       } catch (err) {
         console.error("Erro ao carregar produtos:", err);
       } finally {
@@ -109,7 +124,7 @@ export default function ProdutosPage() {
     }
   };
 
-  // 🔍 Filtros dinâmicos
+  // ===============FILTROS====================S
   const marcas = ["Todas", ...new Set(produtos.map((p) => p.Marca?.trim()))];
   const categorias = ["Todas", ...new Set(produtos.map((p) => p.Categoria?.trim()))];
 
@@ -120,10 +135,21 @@ export default function ProdutosPage() {
       (categoriaSelecionada === "Todas" || p.Categoria === categoriaSelecionada)
     )
     .sort((a, b) => {
-      const qA = Number(a.Unidade);
-      const qB = Number(b.Unidade);
-      return ordenacao === "asc" ? qA - qB : qB - qA;
+      switch (ordenarPor) {
+        case "id-asc":
+          return Number(a.ID) - Number(b.ID);
+        case "id-desc":
+          return Number(b.ID) - Number(a.ID);
+        case "unidade-asc":
+          return Number(a.Unidade) - Number(b.Unidade);
+        case "unidade-desc":
+          return Number(b.Unidade) - Number(a.Unidade);
+        default:
+          return 0;
+      }
     });
+
+
 
   const totalPaginas = Math.ceil(produtosFiltrados.length / itensPorPagina);
   const produtosPaginados = produtosFiltrados.slice(
@@ -141,61 +167,130 @@ export default function ProdutosPage() {
         >
           <DiamondPlus /> Adicionar Produto
         </button>
+
+      </div>
+      {/* ====================================FILTROS=============================== */}
+      <div className={`${tema === "dark" ? "dark" : ""}`}>
+        <div className="flex justify-center flex-wrap gap-4 mb-4 items-center z-10 transition-colors duration-300">
+
+          {/* Filtro por Nome */}
+          <div className="relative w-[240px]">
+            <div className="flex gap-1 items-center dark mb-1">
+              <Box size={18} className="" />
+              <label className="block text-sm font-medium ">
+                Filtrar por Nome:
+              </label>
+            </div>
+            <input
+              type="text"
+              placeholder="Filtrar por nome..."
+              value={filtro}
+              onChange={(e) => {
+                setFiltro(e.target.value);
+                setPaginaAtual(1);
+              }}
+              className="px-3 py-2 pr-10 border rounded-md w-full placeholder-gray-500"
+            />
+            <span className="absolute right-3 top-9 text-gray-400 dark:text-gray-500">
+              <Search size={18} />
+            </span>
+          </div>
+
+
+          {/* Filtro por Marca */}
+          <div>
+            <div className="flex gap-1 items-center dark mb-1">
+              <Badge size={18} />
+              <label className="block text-sm font-medium">Filtrar por Marca:</label>
+            </div>
+            <select
+              value={marcaSelecionada}
+              onChange={(e) => {
+                setMarcaSelecionada(e.target.value);
+                setPaginaAtual(1);
+              }}
+              className="px-3 py-2 border rounded-md w-[180px]
+          dark"
+              style={{ maxHeight: "200px" }}
+            >
+              {marcas.map((marca, i) => (
+                <option key={i} value={marca} className="text-black">
+                  {marca}
+                </option>
+              ))}
+            </select>
+          </div>
+
+
+
+          {/* Filtro por Categoria */}
+          <div>
+            <div className="flex gap-1 items-center dark mb-1">
+              <ChartColumnStacked size={18} />
+              <label className="block text-sm font-medium">Filtrar por Categoria:</label>
+            </div>
+            <select
+              value={categoriaSelecionada}
+              onChange={(e) => {
+                setCategoriaSelecionada(e.target.value);
+                setPaginaAtual(1);
+              }}
+              className="px-3 py-2 border rounded-md w-[180px]
+         dark
+          transition-colors duration-300"
+            >
+              {categorias.map((cat, i) => (
+                <option key={i} value={cat} className="text-black">
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Ordenação */}
+          <div className="relative group w-full max-w-md">
+            <div className="radio-input grid grid-cols-2 gap-2 p-2
+        dark
+        rounded-lg border-[1px]
+        transition-colors duration-300">
+              {[
+                { value: "id-desc", label: "ID ↓" },
+                { value: "id-asc", label: "ID ↑" },
+                { value: "unidade-desc", label: "Unidade ↓" },
+                { value: "unidade-asc", label: "Unidade ↑" },
+              ].map((opt) => (
+                <label
+                  key={opt.value}
+                  className={`flex items-center gap-2 px-3 py-2 rounded cursor-pointer transition-all border ${ordenarPor === opt.value
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-transparent  "
+                    }`}
+                >
+                  <input
+                    type="radio"
+                    name="ordenarPor"
+                    value={opt.value}
+                    checked={ordenarPor === opt.value}
+                    onChange={(e) => setOrdenarPor(e.target.value)}
+                    className="hidden"
+                  />
+                  <span className="text-sm font-medium">{opt.label}</span>
+                </label>
+              ))}
+            </div>
+
+            {/* Tooltip */}
+            <div className="absolute top-full mt-2 left-0 w-max
+        bg-gray-800 text-white text-xs rounded px-2 py-1
+        opacity-0 group-hover:opacity-100
+        transition-opacity duration-300 pointer-events-none">
+              Selecione o critério de ordenação dos produtos
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 mb-4 items-center">
-        <input
-          type="text"
-          placeholder="Filtrar por nome..."
-          value={filtro}
-          onChange={(e) => {
-            setFiltro(e.target.value);
-            setPaginaAtual(1);
-          }}
-          className="px-3 py-2 border rounded-md w-[240px]"
-        />
 
-        <select
-          value={marcaSelecionada}
-          onChange={(e) => {
-            setMarcaSelecionada(e.target.value);
-            setPaginaAtual(1);
-          }}
-          className="px-3 py-2 border rounded-md w-[180px] overflow-auto"
-          style={{ maxHeight: "200px" }}
-        >
-          {marcas.map((marca, i) => (
-            <option key={i} value={marca}>
-              {marca}
-            </option>
-          ))}
-        </select>
-
-
-        <select
-          value={categoriaSelecionada}
-          onChange={(e) => {
-            setCategoriaSelecionada(e.target.value);
-            setPaginaAtual(1);
-          }}
-          className="px-3 py-2 border rounded-md w-[180px]"
-        >
-          {categorias.map((cat, i) => (
-            <option key={i} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-
-        <button
-          onClick={() =>
-            setOrdenacao((prev) => (prev === "asc" ? "desc" : "asc"))
-          }
-          className="px-3 py-2  bg-gray-200 rounded hover:bg-gray-300 w-52"
-        >
-          Ordenar por Unidade ({ordenacao === "asc" ? "↑" : "↓"})
-        </button>
-      </div>
 
 
       {loading ? (
@@ -215,7 +310,7 @@ export default function ProdutosPage() {
             <button
               disabled={paginaAtual === 1}
               onClick={() => setPaginaAtual((p) => p - 1)}
-              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              className="px-3 py-1 border-2 rounded disabled:opacity-80"
             >
               Anterior
             </button>
@@ -225,7 +320,7 @@ export default function ProdutosPage() {
             <button
               disabled={paginaAtual === totalPaginas}
               onClick={() => setPaginaAtual((p) => p + 1)}
-              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              className="px-3 py-1 border-2 rounded disabled:opacity-50 "
             >
               Próxima
             </button>

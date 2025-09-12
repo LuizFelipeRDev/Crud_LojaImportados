@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import TabelaMovimentacoes from "./components/TabelaMovimentacoes";
 import ModalMovimentacoes from "./components/ModalMovimentacoes";
-import { DiamondPlus, X, FileQuestion } from "lucide-react";
+import { DiamondPlus, X, FileQuestion, Search, Box } from "lucide-react";
 
 export default function MovimentacoesPage() {
   const [movimentacoes, setMovimentacoes] = useState([]);
@@ -159,8 +159,12 @@ export default function MovimentacoesPage() {
             </select>
           </div>
 
-          <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium mb-1">Filtrar por produto:</label>
+          <div className="relative flex-1 min-w-[200px]">
+            <div className="flex gap-1">
+              <Box size={18} />
+              <label className="block text-sm font-medium mb-1">Filtrar por produto:</label>
+            </div>
+
             <input
               type="text"
               value={nomeProdutoFiltro}
@@ -168,6 +172,9 @@ export default function MovimentacoesPage() {
               placeholder="Ex: PlayStation"
               className="px-3 py-2 border rounded bg-white text-black w-full"
             />
+            <span className="absolute right-3 top-9 text-gray-400">
+              <Search size={18} />
+            </span>
           </div>
         </div>
 

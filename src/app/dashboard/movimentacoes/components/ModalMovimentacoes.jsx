@@ -57,7 +57,7 @@ const [enviando, setEnviando] = useState(false);
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
       <div className="bg-white dark:bg-gray-900 text-black p-6 rounded-lg shadow-lg w-96 relative">
         <button onClick={onClose} className="absolute top-3 right-3">
           <X size={20} />

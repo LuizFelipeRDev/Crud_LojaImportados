@@ -5,6 +5,9 @@ import { useTheme } from "@/context/ThemeContext";
 import { Truck, Home, Box, BarChart, Settings, Sun, Moon, Repeat } from "lucide-react";
 import { motion } from "framer-motion";
 
+import Image from "next/image";
+import LueLogo from "../assets/logo.svg"
+
 export default function Sidebar({ handleLogout }) {
   const router = useRouter();
   const { tema, toggleTema } = useTheme();
@@ -20,7 +23,7 @@ export default function Sidebar({ handleLogout }) {
     { name: "Movimentações", icon: <Repeat size={20} />, path: "/dashboard/movimentacoes" },
     { name: "Fornecedores", icon: <Truck size={20} />, path: "/dashboard/fornecedores" },
     { name: "Relatórios", icon: <BarChart size={20} />, path: "/dashboard/relatorios" },
-    { name: "Configurações", icon: <Settings size={20} />, path: "/dashboard/configuracoes" },
+    { name: "Ajuda", icon: <Settings size={20} />, path: "/dashboard/ajuda" },
   ];
 
 
@@ -70,8 +73,12 @@ export default function Sidebar({ handleLogout }) {
       <div className="flex flex-col gap-3">
         {/* Descrição discreta acima do separador */}
         {open && (
-          <div className=" text-gray-500 text-center  italic">
-            A Lue Site
+          <div className="flex flex-col gap2 items-center" >
+            <Image src={LueLogo} width={120} height={120} className="w-8 h-8 dark" />
+            <div className=" text-gray-500 text-center  italic">
+              A Lue Site
+            </div>
+
           </div>
         )}
 

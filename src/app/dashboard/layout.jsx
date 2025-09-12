@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }) {
 function LayoutInterno({ children }) {
   const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const { tema } = useTheme(); // <-- Agora o layout também acessa o tema
+  const { tema } = useTheme(); // <-- Agora o layout também acessa o tema!!!!=)
 
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn");

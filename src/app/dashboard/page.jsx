@@ -17,7 +17,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold mb-4">Bem-vindo ao Dashboard!</h1>
+      <h1 className="text-3xl ml-2 font-bold mb-4">Bem-vindo ao Dashboard!</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className={`p-6 rounded-lg shadow-md flex items-center justify-center ${cardBg}`}>
