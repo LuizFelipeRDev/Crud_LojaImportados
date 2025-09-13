@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { X, Edit } from "lucide-react";
+import {  Edit, Trash2 } from "lucide-react";
 
 export default function FornecedorTable({ fornecedores, onEditar, onExcluir }) {
 if (!Array.isArray(fornecedores) || fornecedores.length === 0) {
@@ -43,7 +43,7 @@ if (!Array.isArray(fornecedores) || fornecedores.length === 0) {
                     className="text-red-600 hover:text-red-800 flex items-center gap-1"
                     onClick={() => onExcluir(fornecedor.id)}
                   >
-                    <X size={16} /> Excluir
+                    <Trash2 size={16} /> Excluir
                   </button>
                 </div>
               </td>

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/context/ThemeContext";
-import { Truck, Home, Box, BarChart, Settings, Sun, Moon, Repeat } from "lucide-react";
+import { Truck, Home, Box, BarChart, Settings, Sun, Moon, Repeat, Newspaper, MessageCircleQuestionMark } from "lucide-react";
 import { motion } from "framer-motion";
 
 import Image from "next/image";
@@ -22,8 +22,8 @@ export default function Sidebar({ handleLogout }) {
     { name: "Produtos", icon: <Box size={20} />, path: "/dashboard/produtos" },
     { name: "Movimentações", icon: <Repeat size={20} />, path: "/dashboard/movimentacoes" },
     { name: "Fornecedores", icon: <Truck size={20} />, path: "/dashboard/fornecedores" },
-    { name: "Relatórios", icon: <BarChart size={20} />, path: "/dashboard/relatorios" },
-    { name: "Ajuda", icon: <Settings size={20} />, path: "/dashboard/ajuda" },
+    { name: "Relatórios", icon: <Newspaper size={20} />, path: "/dashboard/relatorios" },
+    { name: "Ajuda", icon: <MessageCircleQuestionMark size={20} />, path: "/dashboard/ajuda" },
   ];
 
 
@@ -74,7 +74,7 @@ export default function Sidebar({ handleLogout }) {
         {/* Descrição discreta acima do separador */}
         {open && (
           <div className="flex flex-col gap2 items-center" >
-            <Image src={LueLogo} width={120} height={120} className="w-8 h-8 dark" />
+            <Image src={LueLogo} width={120} height={120} alt="Lue Logo" className="w-8 h-8 dark" />
             <div className=" text-gray-500 text-center  italic">
               A Lue Site
             </div>
@@ -88,7 +88,7 @@ export default function Sidebar({ handleLogout }) {
         {/* Toggle Dark/Light Mode */}
         <button
           onClick={toggleTema}
-          className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 ${tema === "dark"
+          className={`flex h-10 items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 ${tema === "dark"
             ? "bg-gray-700 hover:bg-gray-600 text-white"
             : "bg-gray-300 hover:bg-gray-400 text-black"
             }`}
@@ -102,8 +102,8 @@ export default function Sidebar({ handleLogout }) {
             </>
           ) : (
 
-            <span className="ml-[-0.42rem] py-1.5">
-              {tema === "dark" ? <Moon size={20} /> : <Sun size={20} />}
+            <span className="ml-[-0.42rem] ">
+              {tema === "dark" ? <Moon size={18} /> : <Sun size={18} />}
             </span>
 
           )}
@@ -112,7 +112,7 @@ export default function Sidebar({ handleLogout }) {
         {/* Botão de Logout */}
         <button
           onClick={handleLogout}
-          className={`flex items-center gap-2 px-3  py-2 rounded-lg transition-colors duration-200 ${tema === "dark"
+          className={`flex h-10 items-center gap-2 px-3  py-2 rounded-lg transition-colors duration-200 ${tema === "dark"
             ? "bg-red-600 hover:bg-red-700 text-white"
             : "bg-red-500 hover:bg-red-600 text-white"
             }`}

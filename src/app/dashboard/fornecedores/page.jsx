@@ -84,6 +84,29 @@ export default function FornecedoresPage() {
     );
     setShowAviso(true);
   };
+  const excluirFornecedor = async (id) => {
+    try {
+      const res = await fetch("/api/fornecedores", {
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setAvisoMensagem(data.error || "Erro ao excluir fornecedor");
+        setShowAviso(true);
+        return;
+      }
+
+      // Aqui você pode atualizar a lista de fornecedores ou mostrar um toast de sucesso
+    } catch (err) {
+      setAvisoMensagem("Erro inesperado ao tentar excluir");
+      setShowAviso(true);
+    }
+  };
+
+
 
   const confirmarExclusao = async () => {
     try {
@@ -141,7 +164,7 @@ export default function FornecedoresPage() {
           className="px-3 py-2 border rounded w-full md:w-1/2 text-black"
         />
 
-        
+
       </div>
 
       {loading ? (
@@ -205,28 +228,76 @@ export default function FornecedoresPage() {
         </div>
       )}
       <div className="flex justify-center items-center gap-2 mt-4">
-          <button
-            onClick={() => setPaginaAtual((p) => Math.max(p - 1, 1))}
-            disabled={paginaAtual === 1}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-          >
-            ← Anterior
-          </button>
+        <button
+          onClick={() => setPaginaAtual((p) => Math.max(p - 1, 1))}
+          disabled={paginaAtual === 1}
+          className="pr-3 pl-2 py-1 border-2 relative rounded disabled:opacity-80 
+               transition-transform duration-200 hover:-translate-x-1"
+        >
+          ← Anterior
+        </button>
 
-          <span className="text-sm font-medium">
-            Página {paginaAtual} de {totalPaginas}
-          </span>
+        <span className="text-sm font-medium">
+          Página {paginaAtual} de {totalPaginas}
+        </span>
 
-          <button
-            onClick={() =>
-              setPaginaAtual((p) => (p < totalPaginas ? p + 1 : p))
-            }
-            disabled={paginaAtual >= totalPaginas}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-          >
-            Próxima →
-          </button>
+        <button
+          onClick={() =>
+            setPaginaAtual((p) => (p < totalPaginas ? p + 1 : p))
+          }
+          disabled={paginaAtual >= totalPaginas}
+          className="pr-1 pl-3 py-1 border-2 relative rounded disabled:opacity-80 
+               transition-transform duration-200 hover:translate-x-1"
+        >
+          Próxima →
+        </button>
+      </div>
+
+
+      {showAviso && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg w-80 relative flex flex-col items-center text-center">
+            <button
+              onClick={() => setShowAviso(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="alert-icon mb-4 text-red-600">
+              <X size={32} />
+            </div>
+
+            <h3 className="alert-title font-bold text-lg mb-2">Aviso</h3>
+            <p className="alert-message text-sm mb-4">{avisoMensagem}</p>
+
+            <div className="alert-actions flex justify-center gap-2 w-full">
+              {!avisoMensagem.includes("vinculado") && (
+                <button
+                  type="button"
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                  onClick={confirmarExclusao}
+                >
+                  Sim, excluir
+                </button>
+              )}
+              <button
+                type="button"
+                className="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={() => setShowAviso(false)}
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
         </div>
+      )}
+
     </div>
+
+
+
+
+
   );
 }

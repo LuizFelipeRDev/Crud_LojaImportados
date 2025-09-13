@@ -93,24 +93,58 @@ export async function PUT(req) {
 export async function DELETE(req) {
   try {
     const { id } = await req.json();
-    const rows = await getSheetData(RANGE, SPREADSHEET_ID);
-    const fornecedores = normalizar(rows);
+    if (!id) {
+      return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });
+    }
 
-    const index = fornecedores.findIndex(
+    // Buscar fornecedores
+    const fornecedoresRows = await getSheetData("Fornecedores!A:D", SPREADSHEET_ID);
+    const fornecedores = normalizar(fornecedoresRows);
+
+    const fornecedor = fornecedores.find(
       (row) => String(row.id).trim() === String(id).trim()
     );
 
-    if (index === -1) {
+    if (!fornecedor) {
       return NextResponse.json({ error: "Fornecedor não encontrado" }, { status: 404 });
     }
 
+    // Buscar produtos
+    const produtosRows = await getSheetData("Produtos!A:G", SPREADSHEET_ID);
+    const produtos = normalizar(produtosRows);
+
+    // Função para limpar strings (retirar espaços extras e padronizar)
+    const clean = (s) => String(s ?? "").trim().toLowerCase();
+
+    // Verificar produtos vinculados pelo NOME do fornecedor
+    const produtosVinculados = produtos.filter(
+      (produto) => clean(produto.fornecedores) === clean(fornecedor.nome)
+    );
+
+    console.log("Fornecedor a deletar:", fornecedor);
+    console.log("Produtos vinculados encontrados:", produtosVinculados);
+
+    if (produtosVinculados.length > 0) {
+      const nomesProdutos = produtosVinculados.map(p => p.nome).join(", ");
+      return NextResponse.json({
+        error: `Este fornecedor está vinculado aos seguintes produtos: ${nomesProdutos}. Não pode ser excluído.`
+      }, { status: 400 });
+    }
+
+    // Excluir fornecedor
+    const index = fornecedores.findIndex(row => String(row.id).trim() === String(id).trim());
     await deleteRow("Fornecedores!A:D", index, SPREADSHEET_ID);
 
     return NextResponse.json({ success: true });
+
   } catch (err) {
     console.error("Erro ao excluir fornecedor:", err);
     return NextResponse.json({ error: "Erro ao excluir fornecedor" }, { status: 500 });
   }
 }
+
+
+
+
 
 

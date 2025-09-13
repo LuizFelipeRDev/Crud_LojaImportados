@@ -19,6 +19,14 @@ input[type=number] {
 }
 
 
+/* =====relatorios====== */
+.btnReport{
+border-radius: 0px 10px 10px 0px;
+
+}
+
+
+
 @keyframes btn-anim1 {
   0% { left: -100%; }
   50%,100% { left: 100%; }

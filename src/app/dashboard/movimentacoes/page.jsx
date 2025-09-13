@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import TabelaMovimentacoes from "./components/TabelaMovimentacoes";
 import ModalMovimentacoes from "./components/ModalMovimentacoes";
-import { DiamondPlus, X, FileQuestion, Search, Box } from "lucide-react";
+import { DiamondPlus, X, FileQuestion, Search, Box, Calendar, CalendarMinus2 } from "lucide-react";
 
 export default function MovimentacoesPage() {
   const [movimentacoes, setMovimentacoes] = useState([]);
@@ -127,58 +127,10 @@ export default function MovimentacoesPage() {
 
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-6 relative">
+      <div className="flex justify-between items-center mb-4">
 
         <h1 className="text-2xl font-bold">Movimentações</h1>
-
-        <div className="mb-4 flex gap-4 flex-wrap">
-          <div>
-            <label className="block text-sm font-medium mb-1">Ano:</label>
-            <select
-              value={anoSelecionado}
-              onChange={(e) => setAnoSelecionado(e.target.value)}
-              className="px-3 py-2 border rounded bg-white text-black"
-            >
-              {anosDisponiveis().map((ano) => (
-                <option key={ano} value={ano}>{ano}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Mês:</label>
-            <select
-              value={mesSelecionado}
-              onChange={(e) => setMesSelecionado(e.target.value)}
-              className="px-3 py-2 border rounded bg-white text-black"
-            >
-              {mesesDisponiveis.map((mes) => (
-                <option key={mes.valor} value={mes.valor}>{mes.nome}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="relative flex-1 min-w-[200px]">
-            <div className="flex gap-1">
-              <Box size={18} />
-              <label className="block text-sm font-medium mb-1">Filtrar por produto:</label>
-            </div>
-
-            <input
-              type="text"
-              value={nomeProdutoFiltro}
-              onChange={(e) => setNomeProdutoFiltro(e.target.value)}
-              placeholder="Ex: PlayStation"
-              className="px-3 py-2 border rounded bg-white text-black w-full"
-            />
-            <span className="absolute right-3 top-9 text-gray-400">
-              <Search size={18} />
-            </span>
-          </div>
-        </div>
-
-
         <button
           onClick={() => setModalOpen(true)}
           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex gap-1"
@@ -186,9 +138,66 @@ export default function MovimentacoesPage() {
           <DiamondPlus /> Adicionar Movimentação
         </button>
 
-
-
       </div>
+      {/* =========Filtros */}
+      <div className="flex justify-center flex-wrap gap-4 mb-4 items-center z-10 transition-colors duration-300">
+        <div>
+          <div className="flex gap-1 items-center dark mb-1">
+            <Calendar size={18} className="" />
+            <label className="block text-sm font-medium ">
+              Ano:
+            </label>
+          </div>
+          <select
+            value={anoSelecionado}
+            onChange={(e) => setAnoSelecionado(e.target.value)}
+            className="px-3 py-2 border rounded dark"
+          >
+            {anosDisponiveis().map((ano) => (
+              <option key={ano} value={ano} className="text-black">{ano}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <div className="flex gap-1 items-center dark mb-1">
+            <CalendarMinus2 size={18} className="" />
+            <label className="block text-sm font-medium ">
+              Mês:
+            </label>
+          </div>
+          <select
+            value={mesSelecionado}
+            onChange={(e) => setMesSelecionado(e.target.value)}
+            className="px-3 py-2 border rounded dark"
+          >
+            {mesesDisponiveis.map((mes) => (
+              <option key={mes.valor} value={mes.valor} className="text-black">{mes.nome}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="relative  w-[240px]">
+          <div className="flex gap-1 items-center dark mb-1">
+            <Box size={18} className="" />
+            <label className="block text-sm font-medium ">
+              Filtrar por Produto:
+            </label>
+          </div>
+
+          <input
+            type="text"
+            value={nomeProdutoFiltro}
+            onChange={(e) => setNomeProdutoFiltro(e.target.value)}
+            placeholder="Ex: PlayStation"
+            className="px-3 py-2 pr-10 border rounded-md w-full placeholder-gray-500"
+          />
+          <span className="absolute right-3 top-9 text-gray-400 dark:text-gray-500">
+            <Search size={18} />
+          </span>
+        </div>
+      </div>
+
 
 
 
@@ -243,9 +252,10 @@ export default function MovimentacoesPage() {
         <button
           onClick={() => setPaginaAtual((p) => Math.max(p - 1, 1))}
           disabled={paginaAtual === 1}
-          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-        >
-          ← Anterior
+          className="pr-3 pl-2 py-1 border-2 relative rounded disabled:opacity-80 
+               transition-transform duration-200 hover:-translate-x-1"
+            >
+              ← Anterior
         </button>
 
         <span className="text-sm font-medium">
@@ -259,9 +269,10 @@ export default function MovimentacoesPage() {
             )
           }
           disabled={paginaAtual >= Math.ceil(movimentacoesFiltradas.length / itensPorPagina)}
-          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-        >
-          Próxima →
+           className="pr-1 pl-3 py-1 border-2 relative rounded disabled:opacity-80 
+               transition-transform duration-200 hover:translate-x-1"
+            >
+              Próxima →
         </button>
       </div>
 

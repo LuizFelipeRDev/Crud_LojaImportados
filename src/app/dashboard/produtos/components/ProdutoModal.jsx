@@ -145,6 +145,7 @@ useEffect(() => {
           />
 
           <div className="flex gap-4">
+            <p>Ativo: </p>
             <label className={`cursor-pointer ${form.Ativo === "Sim" ? "font-bold" : ""}`}>
               <input
                 type="radio"

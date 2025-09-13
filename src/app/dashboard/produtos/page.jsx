@@ -158,12 +158,19 @@ export default function ProdutosPage() {
   );
 
   return (
-    <div className="p-6 relative">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Produtos</h1>
+    <div className="space-y-4 w-full pt-8">
+      <div className="text-2xl font-bold border-2 rounded-2xl py-2 flex items-center justify-center gap-1">
+        <div className="flex items-center">
+          <Box />
+          <h1 >Produtos</h1>
+        </div>
+
+      </div>
+
+      <div className="flex justify-between items-center absolute top-[3.85rem] right-11 max-[1400px]:right-8">
         <button
           onClick={handleNovo}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex gap-1"
+          className="px-4 py-2 bg-blue-600 text-white rounded-r-xl hover:bg-blue-700 flex gap-1"
         >
           <DiamondPlus /> Adicionar Produto
         </button>
@@ -171,7 +178,7 @@ export default function ProdutosPage() {
       </div>
       {/* ====================================FILTROS=============================== */}
       <div className={`${tema === "dark" ? "dark" : ""}`}>
-        <div className="flex justify-center flex-wrap gap-4 mb-4 items-center z-10 transition-colors duration-300">
+        <div className="flex justify-center flex-wrap gap-4 mb-4 items-center z-10 transition-colors duration-300 py-6">
 
           {/* Filtro por Nome */}
           <div className="relative w-[240px]">
@@ -209,9 +216,9 @@ export default function ProdutosPage() {
                 setMarcaSelecionada(e.target.value);
                 setPaginaAtual(1);
               }}
-              className="px-3 py-2 border rounded-md w-[180px]
+              className="px-3 py-2 border rounded-md w-[180px] 
           dark"
-              style={{ maxHeight: "200px" }}
+
             >
               {marcas.map((marca, i) => (
                 <option key={i} value={marca} className="text-black">
@@ -310,9 +317,10 @@ export default function ProdutosPage() {
             <button
               disabled={paginaAtual === 1}
               onClick={() => setPaginaAtual((p) => p - 1)}
-              className="px-3 py-1 border-2 rounded disabled:opacity-80"
+              className="pr-3 pl-2 py-1 border-2 relative rounded disabled:opacity-80 
+               transition-transform duration-200 hover:-translate-x-1"
             >
-              Anterior
+              ← Anterior
             </button>
             <span className="text-sm">
               Página {paginaAtual} de {totalPaginas}
@@ -320,9 +328,10 @@ export default function ProdutosPage() {
             <button
               disabled={paginaAtual === totalPaginas}
               onClick={() => setPaginaAtual((p) => p + 1)}
-              className="px-3 py-1 border-2 rounded disabled:opacity-50 "
+              className="pr-1 pl-3 py-1 border-2 relative rounded disabled:opacity-80 
+               transition-transform duration-200 hover:translate-x-1"
             >
-              Próxima
+              Próxima →
             </button>
           </div>
         </>

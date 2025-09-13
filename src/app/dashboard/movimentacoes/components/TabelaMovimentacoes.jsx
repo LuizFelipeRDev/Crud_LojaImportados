@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { X } from "lucide-react";
+import { Trash2, X } from "lucide-react";
 import ModalMovimentacoes from "./ModalMovimentacoes";
 
 export default function TabelaMovimentacoes({ movimentacoes }) {
@@ -55,7 +55,7 @@ export default function TabelaMovimentacoes({ movimentacoes }) {
   }
 
   return (
-    <div className="overflow-x-auto relative">
+    <div className="overflow-x-auto">
       <table className="w-full border-collapse shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-200 dark:bg-gray-700">
           <tr className="text-black">
@@ -91,10 +91,10 @@ export default function TabelaMovimentacoes({ movimentacoes }) {
                 </td>
                 <td className="p-2 border-b">
                   <button
-                    className="text-red-600 hover:text-red-800 flex items-center gap-1"
+                    className="text-red-600 hover:text-red-800 flex items-center gap-1 font-semibold"
                     onClick={() => handleExcluir(m["Mov ID"])}
                   >
-                    <X size={16} /> Excluir
+                    <Trash2 size={16} /> Excluir
                   </button>
                 </td>
               </tr>

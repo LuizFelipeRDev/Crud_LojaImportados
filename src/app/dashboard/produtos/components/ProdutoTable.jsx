@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { X, Edit } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 
 export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
   if (!produtos || produtos.length === 0) {
@@ -45,20 +45,19 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
               <td className="p-2 border-b">
                 <div className="flex justify-center items-center gap-2">
                   <button
-                    className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                   onClick={() => {
-  console.log("Produto enviado para edição:", produto);
-  onEditar(produto);
-}}
-                    
+                    className="text-blue-500 hover:text-blue-700 flex items-center gap-1 font-semibold"
+                    onClick={() => {
+                      onEditar(produto);
+                    }}
+
                   >
                     <Edit size={16} /> Editar
                   </button>
                   <button
-                    className="text-red-600 hover:text-red-800 flex items-center gap-1"
+                    className="text-red-600 hover:text-red-800 flex items-center gap-1 font-semibold"
                     onClick={() => onExcluir(produto.ID)}
                   >
-                    <X size={16} /> Excluir
+                    <Trash2 size={18} /> Excluir
                   </button>
                 </div>
               </td>

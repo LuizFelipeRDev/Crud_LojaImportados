@@ -41,6 +41,7 @@ function LayoutInterno({ children }) {
   }
 
   const bgClass = tema === "dark" ? "bg-gray-900 text-white" : "bg-white text-black";
+  const EditClass = tema === "editDark" ? "bg-gray-900 text-green-500" : "bg-white text-green-900";
 
   return (
     <div className={`flex h-screen ${bgClass}`}>
