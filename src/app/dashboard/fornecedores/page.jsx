@@ -183,7 +183,7 @@ export default function FornecedoresPage() {
         {!termoBusca && (
           <label
             onClick={() => inputRef.current?.focus()}
-            className="absolute  pointer-events-none ml-8"
+            className="absolute  pointer-events-none ml-8 text-gray-500"
           >
             Buscar por nome ou email...
           </label>
