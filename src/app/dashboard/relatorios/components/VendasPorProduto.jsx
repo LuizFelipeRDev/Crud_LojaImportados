@@ -262,7 +262,7 @@ export default function VendasPorMovimento() {
         <>
           <div className="overflow-x-auto border rounded">
             <table className="min-w-full table-auto text-center border">
-              <thead className="bg-gray-200">
+              <thead className="bg-gray-200 text-black">
                 <tr>
                   <th className="border px-2 py-1">Mov ID</th>
                   <th className="border px-2 py-1">Produto</th>
@@ -291,7 +291,7 @@ export default function VendasPorMovimento() {
             Total geral: {totalGeral.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
           </div>
 
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-end mt-4 pb-2">
             <button
               onClick={gerarPDF}
               className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"

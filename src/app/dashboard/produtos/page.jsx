@@ -158,16 +158,16 @@ export default function ProdutosPage() {
   );
 
   return (
-    <div className="space-y-4 w-full pt-8">
+    <div className="space-y-4 w-full pt-8 relative">
       <div className="text-2xl font-bold border-2 rounded-2xl py-2 flex items-center justify-center gap-1">
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <Box />
           <h1 >Produtos</h1>
         </div>
 
       </div>
 
-      <div className="flex justify-between items-center absolute top-[3.85rem] right-11 max-[1400px]:right-8">
+      <div className="flex justify-between items-center absolute top-[2.37rem] right-1.5 ">
         <button
           onClick={handleNovo}
           className="px-4 py-2 bg-blue-600 text-white rounded-r-xl hover:bg-blue-700 flex gap-1"

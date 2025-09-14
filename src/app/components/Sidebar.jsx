@@ -15,7 +15,7 @@ export default function Sidebar({ handleLogout }) {
 
   const sidebarBg = tema === "dark" ? "bg-gray-800 text-white" : "bg-gray-100 text-black";
   const sidebarBorder = tema === "dark" ? "border-gray-700" : "border-gray-200";
-  const logoutBg = tema === "dark" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-red-500 hover:bg-red-600 text-black";
+ 
 
   const menuItems = [
     { name: "Dashboard", icon: <Home size={20} />, path: "/dashboard" },

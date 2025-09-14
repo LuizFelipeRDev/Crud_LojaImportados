@@ -233,7 +233,7 @@ export default function ProdutosPorFornecedor() {
       ) : produtos.length > 0 ? (
         <div className="overflow-x-auto border rounded mt-4">
           <table className="min-w-full table-auto text-center">
-            <thead className={` ${headerBg}`}>
+            <thead className={`bg-gray-200 text-black`}>
               <tr>
                 <th className="px-4 py-2">Nome</th>
                 <th className="px-4 py-2">Categoria</th>

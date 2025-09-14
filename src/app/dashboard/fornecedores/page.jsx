@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import FornecedorModal from "./components/FornecedorModal";
 import FornecedorTable from "./components/FornecedorTable";
-import { X, DiamondPlus } from "lucide-react";
+import { X, DiamondPlus, Search, Truck } from "lucide-react";
 
 export default function FornecedoresPage() {
   const [fornecedores, setFornecedores] = useState([]);
@@ -17,6 +17,7 @@ export default function FornecedoresPage() {
   );
 
   const [termoBusca, setTermoBusca] = useState("");
+  const inputRef = useRef(null);
   const [paginaAtual, setPaginaAtual] = useState(1);
   const itensPorPagina = 20;
 
@@ -99,7 +100,7 @@ export default function FornecedoresPage() {
         return;
       }
 
-      // Aqui você pode atualizar a lista de fornecedores ou mostrar um toast de sucesso
+ 
     } catch (err) {
       setAvisoMensagem("Erro inesperado ao tentar excluir");
       setShowAviso(true);
@@ -144,28 +145,51 @@ export default function FornecedoresPage() {
   const paginaFornecedores = fornecedoresFiltrados.slice(inicio, fim);
 
   return (
-    <div className="p-6 relative">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Fornecedores</h1>
+    <div className="space-y-4 w-full pt-8 relative">
+
+<div className="text-2xl font-bold border-2 rounded-2xl py-2 flex items-center justify-center gap-1">
+        <div className="flex items-center gap-2">
+          <Truck />
+          <h1>Fornecedores</h1>
+        </div>
+      </div>
+
+
+
+
+<div className="flex justify-between items-center absolute top-[2.37rem] right-1.5">
         <button
           onClick={handleNovo}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex gap-1"
+          className="px-4 py-2 bg-blue-600 text-white rounded-r-xl hover:bg-blue-700 flex gap-1"
         >
           <DiamondPlus /> Adicionar Fornecedor
         </button>
       </div>
 
+
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+      <div
+        className="flex items-center border-2 rounded w-full md:w-1/2 px-3 py-2 cursor-text"
+        onClick={() => inputRef.current?.focus()} 
+      >
+        <Search className=" mr-2" />
         <input
+          ref={inputRef}
           type="text"
-          placeholder="Buscar por nome ou email..."
           value={termoBusca}
           onChange={(e) => setTermoBusca(e.target.value)}
-          className="px-3 py-2 border rounded w-full md:w-1/2 text-black"
+          className="bg-transparent focus:outline-none w-full"
         />
-
-
+        {!termoBusca && (
+          <label
+            onClick={() => inputRef.current?.focus()}
+            className="absolute  pointer-events-none ml-8"
+          >
+            Buscar por nome ou email...
+          </label>
+        )}
       </div>
+    </div>
 
       {loading ? (
         <div className="text-center text-gray-500 p-4 flex flex-col gap-4 items-center">

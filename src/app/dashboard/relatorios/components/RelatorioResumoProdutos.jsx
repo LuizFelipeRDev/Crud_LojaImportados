@@ -104,7 +104,7 @@ export default function RelatorioResumoProdutos() {
       <col className="w-1/3" />
     </colgroup>
     <thead className={headerBg}>
-      <tr>
+      <tr className="bg-gray-200 text-black">
         <th className="px-4 py-2">Status dos Produtos</th>
         <th className="px-4 py-2">Total</th>
       </tr>
@@ -128,7 +128,7 @@ export default function RelatorioResumoProdutos() {
       <col className="w-1/3" />
     </colgroup>
     <thead className={headerBg}>
-      <tr>
+      <tr className="bg-gray-200 text-black">
         <th className="px-4 py-2">Estoque</th>
         <th className="px-4 py-2">Total</th>
       </tr>

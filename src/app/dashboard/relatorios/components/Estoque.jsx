@@ -203,7 +203,7 @@ export default function Estoque() {
                     {/* Tabela */}
                     <div className="overflow-x-auto border rounded">
                         <table className="min-w-full table-auto text-center">
-                            <thead className={` ${headerBg}`}>
+                            <thead className={` bg-gray-200 text-black`}>
                                 <tr>
                                     <th className="px-4 py-2">ID</th>
                                     <th className="px-4 py-2">Produto</th>
@@ -227,7 +227,7 @@ export default function Estoque() {
                     </div>
 
                     {/* Botão PDF */}
-                    <div className="flex justify-end mt-4">
+                    <div className="flex justify-end mt-4 pb-2">
                         <button
                             onClick={gerarPDF}
                             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"

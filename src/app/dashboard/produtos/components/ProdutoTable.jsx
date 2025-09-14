@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, FileQuestion, Trash2 } from "lucide-react";
 
 export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
   if (!produtos || produtos.length === 0) {
-    return <p className="text-gray-500">Nenhum produto cadastrado.</p>;
+    return <div className="flex flex-col items-center gap-2"><FileQuestion className="w-12 h-12 mb-2" /> <p className="text-gray-500">Nenhum produto cadastrado.</p> </div>;
   }
 
   return (
@@ -27,14 +27,18 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
           {produtos.map((produto, idx) => (
             <tr
               key={idx}
-              className="text-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hover:text-gray-700"
+              className="text-center hover:bg-gray-100 transition-colors hover:text-gray-700"
             >
               <td className="p-2 border-b">{produto.ID}</td>
               <td className="p-2 border-b">{produto.Nome}</td>
               <td className="p-2 border-b">{produto.Fornecedores}</td>
               <td className="p-2 border-b">{produto.Categoria}</td>
               <td className="p-2 border-b">{produto.Marca || "-"}</td>
-              <td className="p-2 border-b">{produto.Unidade || "-"}</td>
+              <td className="p-2 border-b">
+                <span className={Number(produto.Unidade) === 0 ? "text-red-600" : "dark"}>
+                  {produto.Unidade || "-"}
+                </span>
+              </td>
               <td className="p-2 border-b">
                 {produto.Ativo === "Sim" ? (
                   <span className="text-green-600 font-bold">Sim</span>

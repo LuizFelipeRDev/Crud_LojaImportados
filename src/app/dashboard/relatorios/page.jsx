@@ -128,8 +128,8 @@ export default function RelatoriosPage() {
         {/* Mensagem centralizada caso nada esteja selecionado */}
         
         {!relatorioSelecionado && (
-          <div className="flex justify-center items-center h-40 text-gray-400 gap-2 mt-12">
-            <FileText/> <p>Nenhum relatório selecionado</p>
+          <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-16">
+            <FileText size={60}/> <p>Nenhum relatório selecionado</p>
     
           </div>
         )}
