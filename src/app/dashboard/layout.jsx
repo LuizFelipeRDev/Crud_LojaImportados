@@ -46,7 +46,7 @@ function LayoutInterno({ children }) {
   return (
     <div className={`flex h-screen ${bgClass}`}>
       <Sidebar handleLogout={handleLogout} />
-      <main className="flex-1 overflow-auto p-6">{children}</main>
+      <main className="flex-1 overflow-auto p-6 max-md:ml-12">{children}</main>
     </div>
   );
 }

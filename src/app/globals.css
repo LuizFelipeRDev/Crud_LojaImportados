@@ -26,7 +26,18 @@ border-radius: 0px 10px 10px 0px;
 }
 
 
+/* ================TEXT===============*/
 
+.title{
+  font-size: 1.5rem;
+  @media(max-width:1024px){
+    font-size: 1rem;
+  }
+}
+
+
+
+/* ===================================*/
 @keyframes btn-anim1 {
   0% { left: -100%; }
   50%,100% { left: 100%; }

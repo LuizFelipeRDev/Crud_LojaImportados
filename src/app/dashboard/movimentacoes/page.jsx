@@ -165,16 +165,17 @@ export default function MovimentacoesPage() {
       <div className="text-2xl font-bold border-2 rounded-2xl py-2 flex items-center justify-center gap-1">
         <div className="flex items-center gap-2">
           <Repeat />
-          <h1>Movimentações</h1>
+          <h1 className="title">Movimentações</h1>
         </div>
       </div>
 
-      <div className="flex justify-between items-center absolute top-[2.37rem] right-1.5">
+      <div className="flex justify-between items-center absolute top-[2.37rem] max-lg:top-[2.2rem] right-1.5 max-lg:right-1">
         <button
           onClick={() => setModalOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-r-xl hover:bg-blue-700 flex gap-1"
+          className="bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center rounded-r-xl  px-3 py-2 lg:px-4 lg:py-2 transition-all"
         >
-          <DiamondPlus /> Adicionar Movimentação
+          <DiamondPlus className="w-5 h-5" />
+          <span className="hidden lg:inline ml-2">Adicionar Movimentação</span>
         </button>
       </div>
 

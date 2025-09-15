@@ -93,7 +93,9 @@ export default function GraficoLucroProdutos() {
   return (
     <div className={`p-4 rounded shadow-md ${tema === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
       <h2 className="text-lg font-bold mb-4">Top Produtos por Lucro</h2>
-      <Bar
+      
+      <div className="">
+       <Bar
         data={processarDados()}
         options={{
           responsive: true,
@@ -151,7 +153,9 @@ export default function GraficoLucroProdutos() {
             },
           },
         }}
-      />
+      /> 
+      </div>
+      
     </div>
   );
 }

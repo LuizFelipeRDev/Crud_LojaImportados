@@ -53,7 +53,7 @@ export default function GraficoEstoquePizza() {
   };
 
   return (
-    <div className={`p-4 rounded shadow-md ${tema === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
+        <div className={`p-4 rounded shadow-md ${tema === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
       <h2 className="text-lg font-bold mb-4">Top 5 Produtos com Maior Estoque</h2>
       <Doughnut
         data={processarDados()}

@@ -31,7 +31,9 @@ export default function Sidebar({ handleLogout }) {
   return (
     <motion.div
       animate={{ width: open ? 64 * 4 : 16 * 4 }}
-      className={`h-screen flex flex-col justify-between p-4 ${sidebarBg} border-r-2 ${sidebarBorder} relative`}
+      className={`h-screen flex flex-col justify-between p-4 ${sidebarBg} border-r-2 ${sidebarBorder} 
+  fixed md:relative top-0 left-0 z-50`}
+
       transition={{ type: "spring", stiffness: 200, damping: 25 }}
     >
       <button

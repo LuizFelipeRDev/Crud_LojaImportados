@@ -49,30 +49,30 @@ export default function RelatorioLucro() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    
-    
-const formatarMoeda = (valor) => {
-  if (valor === null || valor === undefined || valor === "") return "R$ 0,00";
 
-  let numero = valor;
 
-  if (typeof valor === "string") {
-    // Remove separadores de milhar e troca vírgula por ponto
-    numero = valor.replace(/\./g, "").replace(",", ".");
-    numero = parseFloat(numero);
-  } else {
-    numero = Number(valor);
-  }
+    const formatarMoeda = (valor) => {
+        if (valor === null || valor === undefined || valor === "") return "R$ 0,00";
 
-  if (isNaN(numero)) return "R$ 0,00";
+        let numero = valor;
 
-  return numero.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-};
+        if (typeof valor === "string") {
+            // Remove separadores de milhar e troca vírgula por ponto
+            numero = valor.replace(/\./g, "").replace(",", ".");
+            numero = parseFloat(numero);
+        } else {
+            numero = Number(valor);
+        }
+
+        if (isNaN(numero)) return "R$ 0,00";
+
+        return numero.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+    };
 
 
     const filtrarMovimentos = () => {
@@ -90,17 +90,17 @@ const formatarMoeda = (valor) => {
         }, 500);
     };
 
-const parseNumero = (valor) => {
-  if (valor === null || valor === undefined || valor === "") return 0;
+    const parseNumero = (valor) => {
+        if (valor === null || valor === undefined || valor === "") return 0;
 
-  if (typeof valor === "string") {
-    // remove pontos de milhar e troca vírgula por ponto
-    valor = valor.replace(/\./g, "").replace(",", ".");
-  }
+        if (typeof valor === "string") {
+            // remove pontos de milhar e troca vírgula por ponto
+            valor = valor.replace(/\./g, "").replace(",", ".");
+        }
 
-  const numero = parseFloat(valor);
-  return isNaN(numero) ? 0 : numero;
-};
+        const numero = parseFloat(valor);
+        return isNaN(numero) ? 0 : numero;
+    };
 
 
     const calcularRelatorio = () => {
@@ -196,19 +196,35 @@ const parseNumero = (valor) => {
         doc.setFontSize(12);
         doc.text("MEMÓRIA DE CÁLCULO", 14, y);
         y += 6;
-        resumo.memoria.forEach((m, idx) => {
-            doc.text(
-                `Venda ${idx + 1}: ${m.quantidade} × ${formatarMoeda(m.valorUnitario)} → Receita: ${formatarMoeda(
-                    m.receita
-                )}, Custo: ${formatarMoeda(m.custo)}, Lucro: ${formatarMoeda(m.lucro)}`,
-                14,
-                y
-            );
-            y += 6;
-        });
-        doc.text(`Lucro Total: ${formatarMoeda(resumo.lucroTotal)}`, 14, y);
+
+        // Custo Médio Unitário
+    doc.setFontSize(10);
+        doc.text(
+            `Custo Médio Und: ${formatarMoeda(resumo.totalCompras)} / ${resumo.qtdComprada} = ${formatarMoeda(resumo.custoUnitario)}`,
+            14,
+            y
+        );
         y += 6;
-        doc.text(`Lucro Médio: ${formatarMoeda(resumo.lucroMedio)}`, 14, y);
+
+        // CMV
+        doc.text(
+            `Custo das Mercadorias Vendidas (CMV): ${resumo.qtdVendida} × ${formatarMoeda(resumo.custoUnitario)} = ${formatarMoeda(resumo.cmvTotal)}`,
+            14,
+            y
+        );
+        y += 6;
+
+     // Lucro Total
+doc.text("Lucro Total = Receita - Custo", 14, y);
+y += 6;
+doc.text(`${formatarMoeda(resumo.totalVendas)} - ${formatarMoeda(resumo.cmvTotal)} = ${formatarMoeda(resumo.lucroTotal)}`, 14, y);
+y += 8;
+
+// Lucro Médio por Unidade Vendida
+doc.text("Lucro Médio por Unidade Vendida = LucroTotal / UnidadesVendidas", 14, y);
+y += 6;
+doc.text(`${formatarMoeda(resumo.lucroTotal)} / ${resumo.qtdVendida} = ${formatarMoeda(resumo.lucroMedio)}`, 14, y);
+y += 2;
 
         // Tabela
         const colunas = ["Data", "Tipo", "Qtd", "Valor Unitário", "Valor Total", "Saldo Acumulado"];

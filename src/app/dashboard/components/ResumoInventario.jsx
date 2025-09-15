@@ -42,54 +42,62 @@ export default function ResumoInventario() {
     {
       title: "Produtos Registrados",
       value: resumo.produtosRegistrados,
-      icon: <Package size={24} className="text-blue-500" />,
+      icon: <Package size={30} className="text-blue-500" />,
       bgLight: "bg-blue-100",
       bgDark: "bg-blue-900",
     },
     {
       title: "Em Estoque",
       value: resumo.emEstoque,
-      icon: <Layers size={24} className="text-green-500" />,
+      icon: <Layers size={30} className="text-green-500" />,
       bgLight: "bg-green-100",
       bgDark: "bg-green-900",
     },
     {
       title: "Sem Estoque",
       value: resumo.semEstoque,
-      icon: <AlertCircle size={24} className="text-red-500" />,
+      icon: <AlertCircle size={30} className="text-red-500" />,
       bgLight: "bg-red-100",
       bgDark: "bg-red-900",
     },
     {
       title: "Fora de Catálogo",
       value: resumo.foraCatalogo,
-      icon: <Box size={24} className="text-yellow-500" />,
+      icon: <Box size={30} className="text-yellow-500" />,
       bgLight: "bg-yellow-100",
       bgDark: "bg-yellow-900",
     },
   ];
 
   return (
-    <div className={`p-4 pb-8 rounded shadow-md ${tema === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
-      <h2 className="text-lg font-bold mb-4">Resumo do Inventário</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+
+    <div className={`w-full p-4 pb-8 px-8 rounded shadow-md ${tema === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
+      <h2 className="text-xl font-bold mb-4">Resumo do Inventário</h2>
+
+      <div className="grid max-lg:grid-cols-1 grid-cols-2 gap-6 max-sm:gap-4">
         {quadrados.map((q, idx) => (
           <div
             key={idx}
-            className={`rounded-lg shadow p-4 flex items-center gap-4 ${
-              tema === "dark" ? q.bgDark : q.bgLight
-            }`}
+            className={`w-full rounded-2xl shadow p-4 lx:p-6 flex items-center gap-4 lx:gap-6 lx:min-h-[120px] ${tema === "dark" ? q.bgDark : q.bgLight
+              }`}
           >
-            <div>{q.icon}</div>
-            <div>
-              <p className={`text-[1.1rem] ${tema === "dark" ? "text-gray-100" : "text-gray-900"}`}>
+            <div className="text-[1.5rem] lx:text-[2rem]">{q.icon}</div>
+            <div className="flex flex-col">
+              <p className={`max-sm:text-[0.6rem] text-[1rem] font-medium ${tema === "dark" ? "text-gray-100" : "text-gray-900"}`}>
                 {q.title}
               </p>
-              <p className="text-xl font-bold">{q.value}</p>
+              <p className="text-2xl max-sm:text-[1rem] font-bold">{q.value}</p>
             </div>
           </div>
         ))}
       </div>
     </div>
+
+
+
+
+
+
   );
 }
