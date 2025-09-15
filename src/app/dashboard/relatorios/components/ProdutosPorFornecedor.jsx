@@ -4,7 +4,8 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import Spinner from "@/app/components/Spinner";
 import { useTheme } from "@/context/ThemeContext";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, FileText } from "lucide-react";
+import { EnterpriseName } from "@/app/helper/helper";
 
 export default function ProdutosPorFornecedor() {
   const [produtos, setProdutos] = useState([]);
@@ -49,14 +50,12 @@ export default function ProdutosPorFornecedor() {
     }
 
     setFornecedoresSelecionados((prev) => {
-      // remove "todos" se estava selecionado
       const withoutTodos = prev.filter((f) => f !== "todos");
       return withoutTodos.includes(nome)
         ? withoutTodos.filter((f) => f !== nome)
         : [...withoutTodos, nome];
     });
   };
-
   const filtrarProdutos = () => {
     if (fornecedoresSelecionados.length === 0) return;
 
@@ -72,17 +71,15 @@ export default function ProdutosPorFornecedor() {
 
         let filtrados = produtosNormalizados.filter((p) =>
           fornecedoresSelecionados.includes("todos") ||
-          fornecedoresSelecionados.includes(p.fornecedores)
+          fornecedoresSelecionados.includes(p.fornecedor || p.fornecedores) // <-- garante compatibilidade
         );
 
-        // Ordenação
         filtrados.sort((a, b) => {
           const valA = Number(a.unidade) || 0;
           const valB = Number(b.unidade) || 0;
           return ordenacao === "crescente" ? valA - valB : valB - valA;
         });
 
-        // Filtrar quantidade
         if (filtroQuantidade !== "todos") {
           const qtd = Number(filtroQuantidade);
           filtrados = filtrados.slice(-qtd);
@@ -94,39 +91,61 @@ export default function ProdutosPorFornecedor() {
       .finally(() => setLoadingProdutos(false));
   };
 
+  //==============PDF
   const gerarPDF = () => {
     if (!produtos.length) return;
 
     const doc = new jsPDF();
-    const now = new Date();
-    const dataHora = now.toLocaleString("pt-BR", { hour12: false });
 
+    // Data e hora atual
+    const now = new Date();
+    const dataAtual = now.toLocaleDateString("pt-BR");
+    const horaAtual = now.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
+    // Cabeçalho
     doc.setFontSize(16);
     doc.text("RELATÓRIO DE PRODUTOS POR FORNECEDOR", 14, 20);
+
     doc.setFontSize(11);
+    doc.text(`Empresa: ${EnterpriseName}`, 14, 26);
     doc.text(
       `Fornecedores: ${fornecedoresSelecionados.includes("todos")
         ? "Todos"
         : fornecedoresSelecionados.join(", ")
       }`,
       14,
-      30
+      32
     );
-    doc.text(`Data/Hora: ${dataHora}`, 14, 36);
-    doc.text(`Total de produtos: ${produtos.length}`, 14, 42);
+    doc.text(`Data de geração: ${dataAtual}`, 14, 38);
+    doc.text(`Hora de geração: ${horaAtual}`, 14, 44);
+    doc.text(`Total de produtos: ${produtos.length}`, 14, 50)
+    // Tabela
+    const startY = 56;
+    const tableData = produtos.map((p) => [
+      p.fornecedor || p.fornecedores,
+      p.nome,
+      p.categoria,
+      p.marca,
+      p.unidade,
+    ]);
 
-    const startY = 50;
-    const tableData = produtos.map((p) => [p.nome, p.categoria, p.marca, p.unidade]);
     autoTable(doc, {
       startY,
-      head: [["Nome", "Categoria", "Marca", "Unidade"]],
+      head: [["Fornecedor", "Nome", "Categoria", "Marca", "Unidade"]],
       body: tableData,
       headStyles: { fillColor: [41, 128, 185], textColor: 255 },
       styles: { fontSize: 10 },
     });
 
+    // Rodapé com total de produtos
+
     doc.save(`Produtos_Fornecedores.pdf`);
   };
+
 
   return (
     <div className="space-y-4 w-full">
@@ -231,45 +250,54 @@ export default function ProdutosPorFornecedor() {
           </div>
         </div>
       ) : produtos.length > 0 ? (
-        <div className="overflow-x-auto border rounded mt-4">
-          <table className="min-w-full table-auto text-center">
-            <thead className={`bg-gray-200 text-black`}>
-              <tr>
-                <th className="px-4 py-2">Nome</th>
-                <th className="px-4 py-2">Categoria</th>
-                <th className="px-4 py-2">Marca</th>
-                <th className="px-4 py-2">Unidade</th>
-              </tr>
-            </thead>
-            <tbody>
-              {produtos.map((p, i) => (
-                <tr key={i} className="border-t">
-                  <td className="px-4 py-2">{p.nome}</td>
-                  <td className="px-4 py-2">{p.categoria}</td>
-                  <td className="px-4 py-2">{p.marca}</td>
-                  <td className="px-4 py-2">{p.unidade}</td>
+        <>
+          <div className="overflow-x-auto border rounded mt-4">
+            <table className="min-w-full table-auto text-center">
+              <thead className={`bg-gray-200 text-black`}>
+                <tr>
+                  <th className="px-4 py-2">Fornecedor</th>
+                  <th className="px-4 py-2">Nome</th>
+                  <th className="px-4 py-2">Categoria</th>
+                  <th className="px-4 py-2">Marca</th>
+                  <th className="px-4 py-2">Unidade</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {produtos.map((p, i) => (
+                  <tr key={i} className="border-t">
+                    <td className="px-4 py-2">{p.fornecedor || p.fornecedores}</td>
+                    <td className="px-4 py-2">{p.nome}</td>
+                    <td className="px-4 py-2">{p.categoria}</td>
+                    <td className="px-4 py-2">{p.marca}</td>
+                    <td className="px-4 py-2">{p.unidade}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex justify-end mt-4 pb-2">
+            <button
+              onClick={gerarPDF}
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+              disabled={loadingProdutos || !produtos.length}
+            >
+              📄 Gerar PDF
+            </button>
+          </div>
+        </>
+
+
+
       ) : (
         !loadingProdutos && (
-          <div className="p-4 text-center text-gray-500">
-            Nenhum produto encontrado para os fornecedores selecionados.
+          <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-12">
+            <FileText size={60} /> <p className="text-center">Nenhum relatório gerado<br />Clique em "Filtrar" para gerar</p>
           </div>
         )
       )}
 
-      <div className="flex justify-end mt-4 pb-2">
-        <button
-          onClick={gerarPDF}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          disabled={loadingProdutos || !produtos.length}
-        >
-          📄 Gerar PDF
-        </button>
-      </div>
+
     </div>
   );
 }

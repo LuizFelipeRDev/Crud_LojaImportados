@@ -35,7 +35,7 @@ export default function ProdutoTable({ produtos, onEditar, onExcluir }) {
               <td className="p-2 border-b">{produto.Categoria}</td>
               <td className="p-2 border-b">{produto.Marca || "-"}</td>
               <td className="p-2 border-b">
-                <span className={Number(produto.Unidade) === 0 ? "text-red-600" : "dark"}>
+                <span className={Number(produto.Unidade) === 0 ? "text-red-600 font-bold" : "dark"}>
                   {produto.Unidade || "-"}
                 </span>
               </td>

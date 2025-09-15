@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Truck } from "lucide-react";
+import { EnterpriseLogo, EnterpriseName } from "../helper/helper";
 
 export default function Login() {
   const [user, setUser] = useState("");
@@ -33,9 +33,9 @@ export default function Login() {
 
 
       <div className="absolute top-1/2 left-1/2 w-[400px] p-10 m-5 -translate-x-1/2 -translate-y-[55%] bg-black/90 shadow-[0_15px_25px_rgba(0,0,0,0.6)] rounded-xl box-border">
-        <div className="flex flex-col items-center mb-7">
-          <Truck className="w-12 h-12 text-white mb-2" />
-          <p className="text-white text-center text-2xl font-bold tracking-wide">DashImportados</p>
+        <div className="flex  items-center justify-center font-semibold mb-7 text-white gap-2 text-3xl">
+          <EnterpriseLogo size={40} />
+          <h1>{EnterpriseName}</h1>
         </div>
 
         <form onSubmit={handleLogin}>
@@ -48,11 +48,11 @@ export default function Login() {
               value={user}
               onChange={(e) => setUser(e.target.value)}
             />
-              <label
-                htmlFor="user" className="absolute left-0 top-2 text-white text-base transition-all duration-500 peer-focus:-top-5 peer-focus:text-sm peer-valid:-top-5 peer-valid:text-sm">
-                Usuário
-              </label>
-            
+            <label
+              htmlFor="user" className="absolute left-0 top-2 text-white text-base transition-all duration-500 peer-focus:-top-5 peer-focus:text-sm peer-valid:-top-5 peer-valid:text-sm">
+              Usuário
+            </label>
+
 
           </div>
 

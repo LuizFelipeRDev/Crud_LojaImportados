@@ -3,7 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import Spinner from "@/app/components/Spinner";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, FileText } from "lucide-react";
+import { EnterpriseName } from "@/app/helper/helper";
 
 export default function VendasPorMovimento() {
   const [dadosFiltrados, setDadosFiltrados] = useState([]);
@@ -104,6 +105,10 @@ export default function VendasPorMovimento() {
       setCarregando(false);
     }
   };
+
+  // Data atual formatada(relatorio)
+  const dataAtual = new Date().toLocaleDateString("pt-BR")
+
   //===========RELATORIO
   const gerarPDF = () => {
     if (!dadosFiltrados.length) return;
@@ -111,13 +116,25 @@ export default function VendasPorMovimento() {
     const totalGeral = calcularTotal();
     const doc = new jsPDF();
 
+    // Data e hora atual
+    const dataAtual = new Date().toLocaleDateString("pt-BR");
+    const horaAtual = new Date().toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
     // Cabeçalho
     doc.setFontSize(16);
     doc.text("RELATÓRIO DE VENDAS POR MOVIMENTO", 14, 15);
-    doc.setFontSize(11);
-    doc.text(`Total de registros: ${dadosFiltrados.length}`, 14, 36);
 
-    // Colunas e linhas
+    doc.setFontSize(11);
+    doc.text(`Empresa: ${EnterpriseName}`, 14, 22);
+    doc.text(`Data de geração: ${dataAtual}`, 14, 28);
+    doc.text(`Hora de geração: ${horaAtual}`, 14, 34);
+    doc.text(`Total de registros: ${dadosFiltrados.length}`, 14, 40);
+
+    // Tabela
     const colunas = ["Mov ID", "Produto", "Quantidade", "Período", "Valor Unitário", "Valor Total"];
     const linhas = dadosFiltrados.map((item) => [
       item["Mov ID"],
@@ -131,19 +148,35 @@ export default function VendasPorMovimento() {
     autoTable(doc, {
       head: [colunas],
       body: linhas,
-      startY: 28, // começa a tabela um pouco abaixo do cabeçalho
+      startY: 46, // ajustado para não sobrepor o cabeçalho
     });
 
+    // TOTAL GERAL alinhado à direita
     const yAfterTable = doc.lastAutoTable ? doc.lastAutoTable.finalY + 8 : 100;
+
+    const textoTotal = `TOTAL GERAL: ${totalGeral.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    })}`;
+    const larguraTexto = doc.getTextWidth(textoTotal);
+    const alturaPagina = doc.internal.pageSize.getHeight();//nao usado
+    const margemDireita = 14;
+    const posX = doc.internal.pageSize.getWidth() - larguraTexto - margemDireita;
+    const posY = yAfterTable;
+
+    // Fundo azul
+    doc.setFillColor(0, 102, 204);
+    doc.rect(posX - 3, posY - 6, larguraTexto + 6, 9, "F");
+
+    // Texto branco
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.text(
-      `TOTAL GERAL: ${totalGeral.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`,
-      14,
-      yAfterTable
-    );
+    doc.text(textoTotal, posX, posY);
 
     doc.save("TotalVendas.pdf");
   };
+
 
   const totalGeral = calcularTotal();
 
@@ -257,7 +290,9 @@ export default function VendasPorMovimento() {
           <p className="text-sm">Carregando vendas por Movimento...</p>
         </div>
       ) : !dadosFiltrados.length ? (
-        <p className="text-center text-gray-500">Clique em "Filtrar" para carregar as vendas.</p>
+        <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-12">
+          <FileText size={60} /> <p className="text-center">Nenhum relatório gerado<br />Clique em "Filtrar" para gerar</p>
+        </div>
       ) : (
         <>
           <div className="overflow-x-auto border rounded">
@@ -287,8 +322,8 @@ export default function VendasPorMovimento() {
             </table>
           </div>
 
-          <div className="text-right font-semibold mt-2">
-            Total geral: {totalGeral.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+          <div className="text-center font-semibold mt-2   flex justify-end w-full">
+            <p className="w-60 border-2 rounded-md p-2"> Total geral: {totalGeral.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
           </div>
 
           <div className="flex justify-end mt-4 pb-2">

@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 
 import Image from "next/image";
 import LueLogo from "../assets/logo.svg"
+import { EnterpriseLogo, EnterpriseName } from "../helper/helper";
 
 export default function Sidebar({ handleLogout }) {
   const router = useRouter();
@@ -49,7 +50,13 @@ export default function Sidebar({ handleLogout }) {
       {/* Topo: logo */}
       <div className="flex items-center gap-2 mb-6">
         {open ? (
-          <h2 className="text-xl font-bold">DashImportados</h2>
+          <> 
+          <div className="flex gap-1 items-center">
+          <EnterpriseLogo size={28} />
+          <h2 className="text-xl font-bold">{EnterpriseName}</h2>
+        </div>
+</>
+          
         ) : (
           <Truck size={28} />
         )}
@@ -76,7 +83,7 @@ export default function Sidebar({ handleLogout }) {
           <div className="flex flex-col gap2 items-center" >
             <Image src={LueLogo} width={120} height={120} alt="Lue Logo" className="w-8 h-8 dark" />
             <div className=" text-gray-500 text-center  italic">
-              A Lue Site
+              A Lue Project
             </div>
 
           </div>

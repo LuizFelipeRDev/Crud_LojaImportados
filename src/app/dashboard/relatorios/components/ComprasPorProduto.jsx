@@ -2,9 +2,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, FileText } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import Spinner from "@/app/components/Spinner";
+import { EnterpriseName } from "@/app/helper/helper";
 
 export default function ComprasPorMovimento() {
   const [dadosFiltrados, setDadosFiltrados] = useState([]);
@@ -114,43 +115,71 @@ export default function ComprasPorMovimento() {
 
   // Relatório PDF
   const gerarPDF = () => {
-    if (!dadosFiltrados.length) return;
+  if (!dadosFiltrados.length) return;
 
-    const totalGeral = calcularTotal();
-    const doc = new jsPDF();
+  const totalGeral = calcularTotal();
+  const doc = new jsPDF();
 
-    // Cabeçalho
-    doc.setFontSize(16);
-    doc.text("RELATÓRIO DE COMPRAS POR MOVIMENTO", 14, 15);
-    doc.setFontSize(11);
-    doc.text(`Total de registros: ${dadosFiltrados.length}`, 14, 36);
+  // Data e hora atual
+  const dataAtual = new Date().toLocaleDateString("pt-BR");
+  const horaAtual = new Date().toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
 
-    const colunas = ["Mov ID", "Produto", "Quantidade", "Período", "Valor Unitário", "Valor Total"];
-    const linhas = dadosFiltrados.map((item) => [
-      item["Mov ID"],
-      item["Nome Produto"],
-      item["Quantidade"],
-      item["Periodo"],
-      formatarMoeda(item["ValorUnitario"]),
-      formatarMoeda(item["Valor Total"]),
-    ]);
+  // Cabeçalho
+  doc.setFontSize(16);
+  doc.text("RELATÓRIO DE COMPRAS POR MOVIMENTO", 14, 15);
 
-    autoTable(doc, {
-      head: [colunas],
-      body: linhas,
-      startY: 28,
-    });
+  doc.setFontSize(11);
+  doc.text(`Empresa: ${EnterpriseName}`, 14, 22);
+  doc.text(`Data de geração: ${dataAtual}`, 14, 28);
+  doc.text(`Hora de geração: ${horaAtual}`, 14, 34);
+  doc.text(`Total de registros: ${dadosFiltrados.length}`, 14, 40);
 
-    const yAfterTable = doc.lastAutoTable ? doc.lastAutoTable.finalY + 8 : 100;
-    doc.setFontSize(11);
-    doc.text(
-      `TOTAL GERAL: ${totalGeral.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`,
-      14,
-      yAfterTable
-    );
+  // Tabela
+  const colunas = ["Mov ID", "Produto", "Quantidade", "Período", "Valor Unitário", "Valor Total"];
+  const linhas = dadosFiltrados.map((item) => [
+    item["Mov ID"],
+    item["Nome Produto"],
+    item["Quantidade"],
+    item["Periodo"],
+    formatarMoeda(item["ValorUnitario"]),
+    formatarMoeda(item["Valor Total"]),
+  ]);
 
-    doc.save("TotalCompras.pdf");
-  };
+  autoTable(doc, {
+    head: [colunas],
+    body: linhas,
+    startY: 46, // espaçamento após cabeçalho
+  });
+
+  // TOTAL GERAL com estilo
+  const yAfterTable = doc.lastAutoTable ? doc.lastAutoTable.finalY + 8 : 100;
+  const textoTotal = `TOTAL GERAL: ${totalGeral.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  })}`;
+  const larguraTexto = doc.getTextWidth(textoTotal);
+  const larguraPagina = doc.internal.pageSize.getWidth();
+  const margemDireita = 14;
+  const posX = larguraPagina - larguraTexto - margemDireita;
+  const posY = yAfterTable;
+
+  // Fundo azul
+  doc.setFillColor(0, 102, 204);
+  doc.rect(posX - 3, posY - 6, larguraTexto + 6, 9, "F");
+
+  // Texto branco
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.text(textoTotal, posX, posY);
+
+  doc.save("TotalCompras.pdf");
+};
+
 
   const totalGeral = calcularTotal();
 
@@ -265,7 +294,9 @@ export default function ComprasPorMovimento() {
           <p className="text-sm">Carregando compras por Movimento...</p>
         </div>
       ) : !dadosFiltrados.length ? (
-        <p className="text-center text-gray-500">Clique em "Filtrar" para carregar as compras.</p>
+       <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-12">
+                 <FileText size={60} /> <p className="text-center">Nenhum relatório gerado<br />Clique em "Filtrar" para gerar</p>
+               </div>
       ) : (
         <>
           <div className="overflow-x-auto border rounded">
@@ -295,8 +326,8 @@ export default function ComprasPorMovimento() {
             </table>
           </div>
 
-          <div className="text-right font-semibold mt-2">
-            Total geral: {totalGeral.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+          <div className="text-center font-semibold mt-2   flex justify-end w-full">
+            <p className="w-60 border-2 rounded-md p-2"> Total geral: {totalGeral.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
           </div>
 
           <div className="flex justify-end mt-4 pb-2">

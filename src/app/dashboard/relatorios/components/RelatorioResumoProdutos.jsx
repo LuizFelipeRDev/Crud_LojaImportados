@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useTheme } from "@/context/ThemeContext";
+import { FileText } from "lucide-react";
 
 export default function RelatorioResumoProdutos() {
   const [produtos, setProdutos] = useState([]);
@@ -152,7 +153,9 @@ export default function RelatorioResumoProdutos() {
 </div>
 
       ) : (
-        <p className="text-center text-gray-500">Clique em "Filtrar" para gerar o relatório.</p>
+        <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-12">
+          <FileText size={60} /> <p className="text-center">Nenhum relatório gerado<br />Clique em "Filtrar" para gerar</p>
+        </div>
       )}
 
       <div className="flex justify-end mt-4">

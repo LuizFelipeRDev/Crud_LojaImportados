@@ -7,10 +7,12 @@ import Estoque from "./components/Estoque";
 import VendasPorMovimento from "./components/VendasPorProduto";
 import ComprasPorMovimento from "./components/ComprasPorProduto";
 
+
 // Lucide Icons
-import { Newspaper, Box, DollarSign, ShoppingCart, BarChart, FileText } from "lucide-react";
+import { Newspaper, Box, DollarSign, ShoppingCart, BarChart, FileText, CircleDollarSign } from "lucide-react";
 import Spinner from "@/app/components/Spinner";
 import RelatorioResumoProdutos from "./components/RelatorioResumoProdutos";
+import RelatorioLucroProduto from "./components/RelatorioLucroProduto";
 
 // Componentes fake
 const LucroPorProduto = () => <div className="p-4 border rounded">Pré-visualização: Lucro por Produto</div>;
@@ -24,7 +26,9 @@ export default function RelatoriosPage() {
   const categorias = {
     "Gerencial": ["Produtos por Fornecedor", "Estoque"],
     "Financeiro": ["Compras Por Movimento", "Vendas Por Movimento"],
-    "Outros": ["Resumo Geral Produtos"]
+    "Analitico":["Lucro Médio Produto"],
+    "Outros": ["Resumo Geral Produtos"],
+
   };
 
   // Mapeia nomes de relatório para componentes
@@ -35,6 +39,7 @@ export default function RelatoriosPage() {
     "Vendas Por Movimento": <VendasPorMovimento />,
     "Lucro por Produto": <LucroPorProduto />,
     "Resumo Geral Produtos": <RelatorioResumoProdutos />,
+    "Lucro Médio Produto": <RelatorioLucroProduto/>
   };
 
   // Mapeia nomes de relatório para ícones
@@ -45,6 +50,7 @@ export default function RelatoriosPage() {
     "Vendas Por Movimento": BarChart,
     "Lucro por Produto": DollarSign,
     "Resumo Geral Produtos": Newspaper,
+    "Lucro Médio Produto": CircleDollarSign
   };
 
   // Função única de voltar

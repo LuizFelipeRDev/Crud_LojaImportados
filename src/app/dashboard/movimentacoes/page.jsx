@@ -5,7 +5,7 @@ import ModalMovimentacoes from "./components/ModalMovimentacoes";
 import { DiamondPlus, X, FileQuestion, Search, Box, Calendar, CalendarMinus2, Repeat } from "lucide-react";
 
 export default function MovimentacoesPage() {
-  const [movimentacoes, setMovimentacoes] = useState([]); 
+  const [movimentacoes, setMovimentacoes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editMov, setEditMov] = useState(null);
@@ -14,9 +14,9 @@ export default function MovimentacoesPage() {
   const [mesSelecionado, setMesSelecionado] = useState("");
   const [nomeProdutoFiltro, setNomeProdutoFiltro] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
-  const [ordenarPor, setOrdenarPor] = useState("id-desc"); 
+  const [ordenarPor, setOrdenarPor] = useState("id-desc");
   const itensPorPagina = 20;
-  const [tipoFiltro, setTipoFiltro] = useState(""); 
+  const [tipoFiltro, setTipoFiltro] = useState("");
 
 
   const fetchMovimentacoes = async () => {
@@ -181,6 +181,20 @@ export default function MovimentacoesPage() {
       {/* =========Filtros */}
       <div className="flex justify-center flex-wrap gap-4 mb-4 items-center z-10 transition-colors duration-300 py-6">
 
+        {/* Filtro Produto */}
+        <div className="relative w-[240px]">
+          <div className="flex gap-1 items-center dark mb-1">
+            <Box size={18} />
+            <label className="block text-sm font-medium">Filtrar por Produto:</label>
+          </div>
+
+          <input type="text" value={nomeProdutoFiltro} onChange={(e) => setNomeProdutoFiltro(e.target.value)} placeholder="Ex: PlayStation" className="px-3 py-2 pr-10 border rounded-md w-full placeholder-gray-500" />
+          <span className="absolute right-3 top-9 text-gray-400 dark:text-gray-500">
+            <Search size={18} />
+          </span>
+        </div>
+
+
         {/* Ano */}
         <div>
           <div className="flex gap-1 items-center dark mb-1">
@@ -211,18 +225,7 @@ export default function MovimentacoesPage() {
           </select>
         </div>
 
-        {/* Filtro Produto */}
-        <div className="relative w-[240px]">
-          <div className="flex gap-1 items-center dark mb-1">
-            <Box size={18} />
-            <label className="block text-sm font-medium">Filtrar por Produto:</label>
-          </div>
 
-          <input type="text" value={nomeProdutoFiltro} onChange={(e) => setNomeProdutoFiltro(e.target.value)} placeholder="Ex: PlayStation" className="px-3 py-2 pr-10 border rounded-md w-full placeholder-gray-500" />
-          <span className="absolute right-3 top-9 text-gray-400 dark:text-gray-500">
-            <Search size={18} />
-          </span>
-        </div>
 
         {/* Tipo (Todos / Compra / Venda) */}
         <div>
