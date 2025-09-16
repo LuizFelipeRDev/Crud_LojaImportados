@@ -80,7 +80,7 @@ export default function Sidebar({ handleLogout }) {
 
       {/* Botões */}
       <div className="flex flex-col gap-3">
-        {/* Descrição discreta acima do separador */}
+      
         {open && (
           <div className="flex flex-col gap2 items-center" >
             <Image src={LueLogo} width={120} height={120} alt="Lue Logo" className="w-8 h-8 dark" />

@@ -22,9 +22,30 @@ export default function FornecedorModal({ isOpen, onClose, fornecedorEdit, onSub
     }
   }, [fornecedorEdit]);
 
+  const formatTelefone = (value) => {
+    // Remove tudo que não for número
+    const onlyNums = value.replace(/\D/g, "");
+
+    if (onlyNums.length <= 2) {
+      return onlyNums;
+    }
+    if (onlyNums.length <= 7) {
+      return `(${onlyNums.slice(0, 2)}) ${onlyNums.slice(2)}`;
+    }
+    if (onlyNums.length <= 11) {
+      return `(${onlyNums.slice(0, 2)}) ${onlyNums.slice(2, 7)}-${onlyNums.slice(7)}`;
+    }
+    // Limita a 11 dígitos
+    return `(${onlyNums.slice(0, 2)}) ${onlyNums.slice(2, 7)}-${onlyNums.slice(7, 11)}`;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === "telefone" ? formatTelefone(value) : value,
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -50,7 +71,10 @@ export default function FornecedorModal({ isOpen, onClose, fornecedorEdit, onSub
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-white dark:bg-gray-900 text-black p-6 rounded-lg shadow-lg w-96 relative">
-        <button onClick={onClose} className="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+        >
           <X size={20} />
         </button>
 
@@ -97,6 +121,7 @@ export default function FornecedorModal({ isOpen, onClose, fornecedorEdit, onSub
               value={form.telefone}
               onChange={handleChange}
               className="w-full p-2 rounded border text-black"
+              placeholder="(21) 98888-4444"
               required
             />
           </div>

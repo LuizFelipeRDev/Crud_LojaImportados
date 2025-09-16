@@ -115,70 +115,70 @@ export default function ComprasPorMovimento() {
 
   // Relatório PDF
   const gerarPDF = () => {
-  if (!dadosFiltrados.length) return;
+    if (!dadosFiltrados.length) return;
 
-  const totalGeral = calcularTotal();
-  const doc = new jsPDF();
+    const totalGeral = calcularTotal();
+    const doc = new jsPDF();
 
-  // Data e hora atual
-  const dataAtual = new Date().toLocaleDateString("pt-BR");
-  const horaAtual = new Date().toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
+    // Data e hora atual
+    const dataAtual = new Date().toLocaleDateString("pt-BR");
+    const horaAtual = new Date().toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
 
-  // Cabeçalho
-  doc.setFontSize(16);
-  doc.text("RELATÓRIO DE COMPRAS POR MOVIMENTO", 14, 15);
+    // Cabeçalho
+    doc.setFontSize(16);
+    doc.text("RELATÓRIO DE COMPRAS POR MOVIMENTO", 14, 15);
 
-  doc.setFontSize(11);
-  doc.text(`Empresa: ${EnterpriseName}`, 14, 22);
-  doc.text(`Data de geração: ${dataAtual}`, 14, 28);
-  doc.text(`Hora de geração: ${horaAtual}`, 14, 34);
-  doc.text(`Total de registros: ${dadosFiltrados.length}`, 14, 40);
+    doc.setFontSize(11);
+    doc.text(`Empresa: ${EnterpriseName}`, 14, 22);
+    doc.text(`Data de geração: ${dataAtual}`, 14, 28);
+    doc.text(`Hora de geração: ${horaAtual}`, 14, 34);
+    doc.text(`Total de registros: ${dadosFiltrados.length}`, 14, 40);
 
-  // Tabela
-  const colunas = ["Mov ID", "Produto", "Quantidade", "Período", "Valor Unitário", "Valor Total"];
-  const linhas = dadosFiltrados.map((item) => [
-    item["Mov ID"],
-    item["Nome Produto"],
-    item["Quantidade"],
-    item["Periodo"],
-    formatarMoeda(item["ValorUnitario"]),
-    formatarMoeda(item["Valor Total"]),
-  ]);
+    // Tabela
+    const colunas = ["Mov ID", "Produto", "Quantidade", "Período", "Valor Unitário", "Valor Total"];
+    const linhas = dadosFiltrados.map((item) => [
+      item["Mov ID"],
+      item["Nome Produto"],
+      item["Quantidade"],
+      item["Periodo"],
+      formatarMoeda(item["ValorUnitario"]),
+      formatarMoeda(item["Valor Total"]),
+    ]);
 
-  autoTable(doc, {
-    head: [colunas],
-    body: linhas,
-    startY: 46, // espaçamento após cabeçalho
-  });
+    autoTable(doc, {
+      head: [colunas],
+      body: linhas,
+      startY: 46, // espaçamento após cabeçalho
+    });
 
-  // TOTAL GERAL com estilo
-  const yAfterTable = doc.lastAutoTable ? doc.lastAutoTable.finalY + 8 : 100;
-  const textoTotal = `TOTAL GERAL: ${totalGeral.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  })}`;
-  const larguraTexto = doc.getTextWidth(textoTotal);
-  const larguraPagina = doc.internal.pageSize.getWidth();
-  const margemDireita = 14;
-  const posX = larguraPagina - larguraTexto - margemDireita;
-  const posY = yAfterTable;
+    // TOTAL GERAL com estilo
+    const yAfterTable = doc.lastAutoTable ? doc.lastAutoTable.finalY + 8 : 100;
+    const textoTotal = `TOTAL GERAL: ${totalGeral.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    })}`;
+    const larguraTexto = doc.getTextWidth(textoTotal);
+    const larguraPagina = doc.internal.pageSize.getWidth();
+    const margemDireita = 14;
+    const posX = larguraPagina - larguraTexto - margemDireita;
+    const posY = yAfterTable;
 
-  // Fundo azul
-  doc.setFillColor(0, 102, 204);
-  doc.rect(posX - 3, posY - 6, larguraTexto + 6, 9, "F");
+    // Fundo azul
+    doc.setFillColor(0, 102, 204);
+    doc.rect(posX - 3, posY - 6, larguraTexto + 6, 9, "F");
 
-  // Texto branco
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text(textoTotal, posX, posY);
+    // Texto branco
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text(textoTotal, posX, posY);
 
-  doc.save("TotalCompras.pdf");
-};
+    doc.save("TotalCompras.pdf");
+  };
 
 
   const totalGeral = calcularTotal();
@@ -294,14 +294,14 @@ export default function ComprasPorMovimento() {
           <p className="text-sm">Carregando compras por Movimento...</p>
         </div>
       ) : !dadosFiltrados.length ? (
-       <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-12">
-                 <FileText size={60} /> <p className="text-center">Nenhum relatório gerado<br />Clique em "Filtrar" para gerar</p>
-               </div>
+        <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-12">
+          <FileText size={60} /> <p className="text-center">Nenhum relatório gerado<br />Clique em "Filtrar" para gerar</p>
+        </div>
       ) : (
         <>
           <div className="overflow-x-auto border rounded">
             <table className="min-w-full table-auto text-center border">
-              <thead className={`bg-gray-200 text-black`}>
+              <thead className={headerBg}>
                 <tr>
                   <th className="border px-2 py-1">Mov ID</th>
                   <th className="border px-2 py-1">Produto</th>

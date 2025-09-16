@@ -253,7 +253,7 @@ export default function ProdutosPorFornecedor() {
         <>
           <div className="overflow-x-auto border rounded mt-4">
             <table className="min-w-full table-auto text-center">
-              <thead className={`bg-gray-200 text-black`}>
+             <thead className={headerBg}>
                 <tr>
                   <th className="px-4 py-2">Fornecedor</th>
                   <th className="px-4 py-2">Nome</th>

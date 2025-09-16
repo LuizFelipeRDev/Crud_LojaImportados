@@ -5,6 +5,7 @@ import autoTable from "jspdf-autotable";
 import Spinner from "@/app/components/Spinner";
 import { ChevronDown, FileText } from "lucide-react";
 import { EnterpriseName } from "@/app/helper/helper";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function VendasPorMovimento() {
   const [dadosFiltrados, setDadosFiltrados] = useState([]);
@@ -20,6 +21,8 @@ export default function VendasPorMovimento() {
 
   const dropdownRef = useRef();
 
+  const { tema } = useTheme();
+  const headerBg = tema === "dark" ? "bg-gray-500 text-gray-200" : "bg-gray-200 text-gray-900";
   // Busca produtos apenas com vendas
   useEffect(() => {
     async function fetchProdutosComVenda() {
@@ -297,7 +300,7 @@ export default function VendasPorMovimento() {
         <>
           <div className="overflow-x-auto border rounded">
             <table className="min-w-full table-auto text-center border">
-              <thead className="bg-gray-200 text-black">
+              <thead className={headerBg}>
                 <tr>
                   <th className="border px-2 py-1">Mov ID</th>
                   <th className="border px-2 py-1">Produto</th>

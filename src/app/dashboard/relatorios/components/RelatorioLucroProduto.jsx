@@ -4,6 +4,7 @@ import { FileText, ChevronDown, ChevronUp, Calculator } from "lucide-react";
 import Spinner from "@/app/components/Spinner";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function RelatorioLucro() {
     const [produtos, setProdutos] = useState([]);
@@ -18,6 +19,8 @@ export default function RelatorioLucro() {
     const [memoriaAberta, setMemoriaAberta] = useState(false);
     const dropdownRef = useRef();
 
+    const { tema } = useTheme();
+    const headerBg = tema === "dark" ? "bg-gray-500 text-gray-200" : "bg-gray-200 text-gray-900";
     // Busca produtos
     useEffect(() => {
         async function fetchProdutos() {
@@ -198,7 +201,7 @@ export default function RelatorioLucro() {
         y += 6;
 
         // Custo Médio Unitário
-    doc.setFontSize(10);
+        doc.setFontSize(10);
         doc.text(
             `Custo Médio Und: ${formatarMoeda(resumo.totalCompras)} / ${resumo.qtdComprada} = ${formatarMoeda(resumo.custoUnitario)}`,
             14,
@@ -214,17 +217,17 @@ export default function RelatorioLucro() {
         );
         y += 6;
 
-     // Lucro Total
-doc.text("Lucro Total = Receita - Custo", 14, y);
-y += 6;
-doc.text(`${formatarMoeda(resumo.totalVendas)} - ${formatarMoeda(resumo.cmvTotal)} = ${formatarMoeda(resumo.lucroTotal)}`, 14, y);
-y += 8;
+        // Lucro Total
+        doc.text("Lucro Total = Receita - Custo", 14, y);
+        y += 6;
+        doc.text(`${formatarMoeda(resumo.totalVendas)} - ${formatarMoeda(resumo.cmvTotal)} = ${formatarMoeda(resumo.lucroTotal)}`, 14, y);
+        y += 8;
 
-// Lucro Médio por Unidade Vendida
-doc.text("Lucro Médio por Unidade Vendida = LucroTotal / UnidadesVendidas", 14, y);
-y += 6;
-doc.text(`${formatarMoeda(resumo.lucroTotal)} / ${resumo.qtdVendida} = ${formatarMoeda(resumo.lucroMedio)}`, 14, y);
-y += 2;
+        // Lucro Médio por Unidade Vendida
+        doc.text("Lucro Médio por Unidade Vendida = LucroTotal / UnidadesVendidas", 14, y);
+        y += 6;
+        doc.text(`${formatarMoeda(resumo.lucroTotal)} / ${resumo.qtdVendida} = ${formatarMoeda(resumo.lucroMedio)}`, 14, y);
+        y += 2;
 
         // Tabela
         const colunas = ["Data", "Tipo", "Qtd", "Valor Unitário", "Valor Total", "Saldo Acumulado"];
@@ -309,8 +312,11 @@ y += 2;
             </div>
 
             {carregando ? (
-                <div className="text-center text-gray-500 p-4 flex flex-col gap-2 items-center">
-                    <Spinner /> <p className="text-sm">Carregando relatório...</p>
+                <div className="overflow-x-auto  mt-4 flex justify-center items-center p-8">
+                    <div className="text-center text-gray-500 p-4 flex flex-col gap-2 items-center">
+                        <div className="loader"></div>
+                        <p className="text-sm">Carregando ...</p>
+                    </div>
                 </div>
             ) : !dadosFiltrados.length ? (
                 <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-12">
@@ -350,10 +356,14 @@ y += 2;
                     {resumo && (
                         <div className="border rounded mt-4 ">
                             <button
-                                className="w-full px-4 py-2 text-left flex justify-between items-center font-semibold text-black bg-gray-200"
+                                className={`w-full px-4 py-2 text-left flex justify-between items-center font-semibold ${headerBg}`}
                                 onClick={() => setMemoriaAberta(!memoriaAberta)}
                             >
-                                <div className="flex gap-1 items-center "><Calculator size={20} /><p className="font-bold">Memória de Cálculo</p></div> {memoriaAberta ? <ChevronUp /> : <ChevronDown />}
+                                <div className="flex gap-1 items-center w-full">
+                                    <Calculator size={20} />
+                                    <p className="font-bold">Memória de Cálculo</p>
+                                </div>
+                                {memoriaAberta ? <ChevronUp /> : <ChevronDown />}
                             </button>
                             {memoriaAberta && (
                                 <div className="p-4 ">
@@ -381,7 +391,7 @@ y += 2;
                     {/* Tabela */}
                     <div className="overflow-x-auto border rounded mt-4">
                         <table className="min-w-full table-auto text-center border">
-                            <thead className="bg-gray-200 text-black">
+                            <thead className={headerBg}>
                                 <tr>
                                     <th className="border px-2 py-1">Data</th>
                                     <th className="border px-2 py-1">Tipo</th>
