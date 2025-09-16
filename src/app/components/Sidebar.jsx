@@ -24,7 +24,7 @@ export default function Sidebar({ handleLogout }) {
     { name: "Movimentações", icon: <Repeat size={20} />, path: "/dashboard/movimentacoes" },
     { name: "Fornecedores", icon: <Truck size={20} />, path: "/dashboard/fornecedores" },
     { name: "Relatórios", icon: <Newspaper size={20} />, path: "/dashboard/relatorios" },
-    { name: "Ajuda", icon: <MessageCircleQuestionMark size={20} />, path: "/dashboard/ajuda" },
+    { name: "Sobre o Projeto", icon: <MessageCircleQuestionMark size={20} />, path: "/dashboard/ajuda" },
   ];
 
 

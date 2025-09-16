@@ -26,7 +26,7 @@ export default function RelatoriosPage() {
   const categorias = {
     "Gerencial": ["Produtos por Fornecedor", "Estoque"],
     "Financeiro": ["Compras Por Movimento", "Vendas Por Movimento"],
-    "Analitico":["Lucro Médio Produto"],
+    "Analitico": ["Lucro Médio Produto"],
     "Outros": ["Resumo Geral Produtos"],
 
   };
@@ -39,7 +39,7 @@ export default function RelatoriosPage() {
     "Vendas Por Movimento": <VendasPorMovimento />,
     "Lucro por Produto": <LucroPorProduto />,
     "Resumo Geral Produtos": <RelatorioResumoProdutos />,
-    "Lucro Médio Produto": <RelatorioLucroProduto/>
+    "Lucro Médio Produto": <RelatorioLucroProduto />
   };
 
   // Mapeia nomes de relatório para ícones
@@ -66,26 +66,29 @@ export default function RelatoriosPage() {
     <div className="p-6 space-y-6 relative">
       <div className="flex gap-2 items-center justify-center w-full border-2 py-2 rounded-2xl">
         <Newspaper />
-        <h1 className="text-2xl font-bold">Relatórios</h1>
+        <h1 className="title font-bold">Relatórios</h1>
       </div>
 
-      {/*========BOTÃO VOLTAR ÚNICO=========== */}
+      {/* Botão Voltar fixo no canto superior direito do menu */}
       {(categoriaSelecionada || relatorioSelecionado) && (
-        <button
-          className="absolute bottom-[189.8px] right-[30px] px-4 py-2 bg-red-500 text-white hover:bg-red-400 rounded btnReport"
-          onClick={handleVoltar}
-        >
-          Voltar
-        </button>
-      )}
+        <div className="absolute top-7 right-[1.8rem] max-lg:top-[1.7rem] ">
+          <button
+            className="px-6 max-lg:px-3 py-[0.7rem] max-lg:py-1  bg-red-500 text-white hover:bg-red-400 rounded btnReport text-center flex items-center justify-center"
+            onClick={handleVoltar}
+          >
+            <span className="hidden lg:block">Voltar</span>
 
+            <span className="block lg:hidden font-bold text-lg">✕</span>
+          </button>
+        </div>
+      )}
       {/*========MENU=========== */}
-      <div className={`rounded-2xl h-40 ${!relatorioSelecionado ? "border-2 dark:border-gray-700" : ""}`}>
+      <div className={`rounded-2xl h-40 max-xl:h-min max-lg:pb-4  ${!relatorioSelecionado ? "border-2 dark:border-gray-700" : ""}`}>
 
         {/* Passo 1: Seleção da categoria */}
         {!categoriaSelecionada && (
           <div className="flex flex-col items-center space-y-4 mt-4">
-            <p className=" text-lg font-semibold">Selecione uma categoria de relatório</p>
+            <p className=" text-lg font-semibold max-lg:text-center">Selecione uma categoria de relatório</p>
             <div className="flex gap-4 flex-wrap justify-center">
               {Object.keys(categorias).map(cat => (
                 <button
@@ -102,7 +105,7 @@ export default function RelatoriosPage() {
 
         {/* Passo 2: Seleção do relatório dentro da categoria */}
         {categoriaSelecionada && !relatorioSelecionado && (
-          <div className="flex flex-col items-center space-y-4 mt-4">
+          <div className="flex flex-col items-center space-y-4 mt-4 ">
             <p className=" text-lg font-semibold">Categoria: {categoriaSelecionada}</p>
             <div className="flex gap-4 flex-wrap justify-center">
               {categorias[categoriaSelecionada].map(rel => {
@@ -131,16 +134,17 @@ export default function RelatoriosPage() {
           </div>
         )}
 
-        {/* Mensagem centralizada caso nada esteja selecionado */}
-        
-        {!relatorioSelecionado && (
-          <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-16">
-            <FileText size={60}/> <p>Nenhum relatório selecionado</p>
-    
-          </div>
-        )}
 
       </div>
+
+      {/* Mensagem centralizada caso nada esteja selecionado */}
+
+      {!relatorioSelecionado && (
+        <div className="flex flex-col justify-center items-center h-40 text-gray-400 gap-2 mt-16">
+          <FileText size={60} /> <p>Nenhum relatório selecionado</p>
+
+        </div>
+      )}
     </div>
   );
 }
