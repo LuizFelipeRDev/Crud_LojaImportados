@@ -1,4 +1,7 @@
 
+> [!TIP] LINK DA APLICAÇÂO
+> [Conteúdo aqui](https://07-dash-importados.vercel.app/login)
+
 ## DASHBOARD FULLSTACK
 
 projeto nextReack > API REST < GOOGLESHEET(banco de dados)
