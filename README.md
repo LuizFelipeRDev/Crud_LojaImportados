@@ -4,6 +4,7 @@
 
 ## ESTRUTURA
 
+```
 /dashImportados
 ├─ /app (Next.js 13+ usando app router)
 │   ├─ /dashboard
@@ -25,7 +26,7 @@
 │   └─ globals.css
 ├─ package.json
 └─ next.config.js
-
+```
 
 ## DASHBOARD FULLSTACK
 
