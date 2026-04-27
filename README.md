@@ -2,6 +2,30 @@
 >  **LINK DA APLICAÇÂO:**  
 > (https://07-dash-importados.vercel.app/login)
 
+## ESTRUTURA
+
+/dashImportados
+├─ /app (Next.js 13+ usando app router)
+│   ├─ /dashboard
+│   │   ├─ page.tsx        ← Dashboard principal
+│   │   ├─ components/
+│   │   │   ├─ Sidebar.tsx
+│   │   │   ├─ Navbar.tsx
+│   │   │   └─ Graphs.tsx
+│   │   └─ styles.css
+│   ├─ /login
+│   │   └─ page.tsx        ← Login page
+│   └─ layout.tsx          ← Layout global (envolve ThemeProvider)
+├─ /context
+│   └─ ThemeContext.tsx    ← Context para modo noturno
+├─ /lib
+│   └─ googleSheets.ts     ← Funções CRUD no Google Sheets
+├─ /public
+├─ /styles
+│   └─ globals.css
+├─ package.json
+└─ next.config.js
+
 
 ## DASHBOARD FULLSTACK
 
