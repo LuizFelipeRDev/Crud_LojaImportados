@@ -44,6 +44,4 @@ projeto nextReack > API REST < GOOGLESHEET(banco de dados)
 
 ![alt text](image-3.png)
 
-## ESTRUTURA DO PROJETO
 
-![alt text](image-4.png)
